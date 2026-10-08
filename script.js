@@ -241,6 +241,7 @@ const nouvelIdentifiant = () => `v${Date.now().toString(36)}${Math.random().toSt
 function afficherProfil() {
   const profil = etat.profil;
   $('#profil-nom').textContent = profil.nom.trim();
+  $('#topbar-nom').textContent = profil.nom.trim();
   $('#profil-utilisateur').textContent = `@${profil.utilisateur}`;
   $('#profil-suivis').textContent = formaterNombre(profil.suivis) || '0';
   $('#profil-followers').textContent = formaterNombre(profil.followers) || '0';
@@ -321,6 +322,14 @@ const etatsVides = {
     texte: 'Les vidéos que tu aimes apparaîtront ici.',
   },
 };
+
+// Quand le grand nom disparaît sous la barre du haut, il s'affiche en petit au centre de la barre
+function configurerBarreDuHaut() {
+  const barre = $('.topbar');
+  new IntersectionObserver(([entree]) => {
+    barre.classList.toggle('compacte', !entree.isIntersecting && entree.boundingClientRect.top < barre.offsetHeight);
+  }, { rootMargin: `-${barre.offsetHeight}px 0px 0px 0px` }).observe($('.name'));
+}
 
 function configurerOnglets() {
   const onglets = [...document.querySelectorAll('.tab')];
@@ -927,6 +936,7 @@ $('#ecran-details').addEventListener('fermeture', () => afficherListe());
 /* ---------- Démarrage ---------- */
 
 async function demarrer() {
+  configurerBarreDuHaut();
   configurerOnglets();
   const donnees = await Stockage.charger();
   etat.profil = donnees.profil;

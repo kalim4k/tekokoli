@@ -54,10 +54,38 @@ svg.fill { fill: currentColor; }
 }
 
 /* ---------- Barre du haut ---------- */
+/* Collée en haut quand on fait défiler : la zone blanche (56px) masque ce qui passe dessous, les icônes restent dans les 44px du haut */
 .topbar {
-  position: relative;
-  height: 44px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  height: 56px;
+  background: var(--bg);
 }
+
+.topbar-titre {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  max-width: 140px;
+  height: 44px;
+  transform: translateX(-50%);
+  font-size: 17.7px;
+  font-weight: 800;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.topbar.compacte .topbar-titre { opacity: 1; }
+.topbar-titre #topbar-nom {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar-titre .name-badge { flex: none; margin-left: 3px; transform: none; }
 
 .icon-btn {
   display: block;
@@ -109,7 +137,7 @@ svg.fill { fill: currentColor; }
 
 /* ---------- En-tête du profil ---------- */
 .profile {
-  padding: 18.6px 17px 0;
+  padding: 6.6px 17px 0;
 }
 
 .profile-head { position: relative; }

@@ -22,9 +22,9 @@ const Stockage = (() => {
     { id: 'v4', type: 'image', image: 'images/video-4.jpg', vues: '20', epingle: false },
     { id: 'v5', type: 'image', image: 'images/video-5.jpg', vues: '61', epingle: false },
     { id: 'v6', type: 'image', image: 'images/video-6.jpg', vues: '66', epingle: false },
-    { id: 'v7', type: 'image', image: 'images/video-7.jpg', vues: '48', epingle: false },
-    { id: 'v8', type: 'image', image: 'images/video-8.jpg', vues: '35', epingle: false },
-    { id: 'v9', type: 'image', image: 'images/video-9.jpg', vues: '112', epingle: false },
+    { id: 'v7', type: 'image', image: 'images/video-7.jpg', vues: '56300', epingle: false },
+    { id: 'v8', type: 'image', image: 'images/video-8.jpg', vues: '86300', epingle: false },
+    { id: 'v9', type: 'image', image: 'images/video-9.jpg', vues: '192', epingle: false },
   ];
 
   let base = null;            // IDBDatabase, ou null si IndexedDB est indisponible
