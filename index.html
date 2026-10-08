@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>REMIALDE (@ia.tool6) | TikTok</title>
+
+  <!-- Application installable (PWA) -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="application-name" content="TikTok">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="TikTok">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wdth,wght@12..36,75..150,300..900&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Barre du haut -->
+    <header class="topbar">
+      <button class="icon-btn edit" id="ouvrir-profil" aria-label="Modifier le profil">
+        <svg viewBox="0 0 24 24" class="stroke"><path d="M17.2 3.1a2.6 2.6 0 0 1 3.7 3.7L9.6 18.1q-2.1 2.1-6.5 2.7.6-4.4 2.7-6.5zM14.6 5.7l3.7 3.7"/></svg>
+      </button>
+      <div class="topbar-right">
+        <button class="visitors" aria-label="Visiteurs du profil">
+          <img src="images/visiteur.jpg" alt="">
+          <span>99</span>
+        </button>
+        <button class="icon-btn" aria-label="Ajouter des amis">
+          <svg viewBox="0 0 24 24" class="stroke"><circle cx="8.6" cy="6.4" r="3.9"/><path d="M1.9 21.4c0-4.6 3-7.6 6.9-7.6 1.8 0 3.3.5 4.5 1.5M18.3 13.6v8.2M14.2 17.7h8.2"/></svg>
+        </button>
+        <button class="icon-btn" id="ouvrir-videos" aria-label="Gérer les vidéos">
+          <svg viewBox="0 0 24 24" class="stroke thick"><path d="M3.2 5.6h17.6M3.2 11.9h17.6M3.2 18.2h17.6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- En-tête du profil -->
+      <section class="profile">
+        <div class="profile-head">
+          <h1 class="name"><span class="name-text" id="profil-nom">REMIALDE</span><span class="name-badge">9+</span></h1>
+          <p class="handle" id="profil-utilisateur">@ia.tool6</p>
+          <ul class="stats">
+            <li><strong id="profil-suivis">15</strong><span>Suivis</span></li>
+            <li><strong id="profil-followers">3 319</strong><span>Followers</span></li>
+            <li><strong id="profil-jaime">16,6 K</strong><span>J'aime</span></li>
+          </ul>
+
+          <div class="avatar-wrap">
+            <img class="avatar" id="profil-avatar" src="images/avatar.jpg" alt="Photo de profil">
+            <button class="note" aria-label="Ajouter une note">À quoi<br>penses-tu ?</button>
+            <span class="note-dot"></span>
+            <button class="avatar-add" aria-label="Ajouter une story">
+              <svg viewBox="0 0 12 12"><path d="M6 1.2v9.6M1.2 6h9.6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="bio" id="profil-bio">Je te montre étape par étape à créer ton propre jeu sans coder avec l'IA et le monétiser avec Google adsense 👇👇</p>
+        <a class="bio-link" id="profil-lien" href="https://gamebuild-delta.vercel.app/" target="_blank" rel="noopener">https://gamebuild-delta.vercel.app/</a>
+
+        <a class="studio-btn" href="#">
+          <svg viewBox="0 0 13 12" aria-hidden="true">
+            <defs>
+              <linearGradient id="studio-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fe2c55"/>
+                <stop offset="1" stop-color="#ff6cc8"/>
+              </linearGradient>
+            </defs>
+            <circle cx="4.3" cy="2.7" r="2.6" fill="#fe2c55"/>
+            <path d="M.1 11.6c0-3.4 1.6-5.6 4.2-5.6 1 0 1.8.3 2.4.8L5.2 12H.5q-.4 0-.4-.4z" fill="url(#studio-grad)"/>
+            <path d="M9.4 5.1l.9 1.9 2 .3-1.5 1.4.4 2.1-1.8-1-1.8 1 .4-2.1L6.5 7.3l2-.3z" fill="url(#studio-grad)" stroke="url(#studio-grad)" stroke-width=".5" stroke-linejoin="round"/>
+          </svg>
+          TikTok Studio
+        </a>
+      </section>
+
+      <!-- Onglets -->
+      <nav class="tabs" role="tablist">
+        <button class="tab active" role="tab" aria-selected="true" data-tab="videos" aria-label="Vidéos">
+          <svg class="grid-icon" viewBox="0 0 29 20" width="29" height="20">
+            <path class="bars" d="M1.55 1.6v5.8M8.55 1.6v5.8M15.55 1.6v5.8M1.55 12.2v6.2M8.55 12.2v6.2M15.55 12.2v6.2"/>
+            <path class="caret" d="M22.3 8.4h6.6l-3.3 3.3z"/>
+          </svg>
+        </button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="prive" aria-label="Vidéos privées">
+          <svg viewBox="0 0 24 24" class="stroke lock-icon"><rect x="4.5" y="11.2" width="15" height="10.8" rx="2.8"/><path d="M7.8 11.2V7.6a4.2 4.2 0 0 1 8.4 0v3.6"/></svg>
+        </button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="republications" aria-label="Republications">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M5.8 3.8v11.6a3 3 0 0 0 3 3h2.8M1.6 8l4.2-4.2L10 8M12.4 5.6h2.2a3 3 0 0 1 3 3v11.6M13.8 16.4l3.8 3.8 3.8-3.8"/></svg>
+        </button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="favoris" aria-label="Favoris">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M5.4 4.9a1.4 1.4 0 0 1 1.4-1.4h10.4a1.4 1.4 0 0 1 1.4 1.4v15.6l-6.6-5.1-6.6 5.1z"/></svg>
+        </button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="jaime" aria-label="Vidéos aimées">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M12 20.4S2.6 14.8 2.6 8.7c0-2.9 2.2-5 4.9-5 1.9 0 3.5 1 4.5 2.6 1-1.6 2.6-2.6 4.5-2.6 2.7 0 4.9 2.1 4.9 5 0 6.1-9.4 11.7-9.4 11.7z"/></svg>
+        </button>
+        <span class="tab-indicator"></span>
+      </nav>
+
+      <section class="panel" id="panel-videos">
+        <div class="grid" id="grid"></div>
+        <p class="grille-vide" id="grille-vide" hidden>Aucune vidéo pour l'instant.<br>Ajoute-en avec le bouton ≡ en haut à droite.</p>
+      </section>
+      <section class="panel empty" id="panel-empty" hidden>
+        <div class="empty-icon" id="empty-icon"></div>
+        <h2 id="empty-title"></h2>
+        <p id="empty-text"></p>
+      </section>
+    </main>
+
+    <!-- Barre de navigation du bas -->
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" class="stroke"><path d="M1 11.3l11-9 11 9M4 9.4V21a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9.4M12 15.2V22"/></svg>
+        <span class="nav-label">Accueil</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" class="stroke"><circle cx="8.6" cy="6.9" r="4"/><path d="M1.4 20.8c0-3.9 3.1-6.4 7.2-6.4s7.2 2.5 7.2 6.4"/><circle cx="17.9" cy="9.5" r="2.6"/><path d="M18.2 14.9c3.1 0 5.2 2.1 5.2 5.4"/></svg>
+        <span class="nav-label">Amis</span>
+      </a>
+      <a href="#" class="nav-item create" aria-label="Créer">
+        <span class="create-btn">
+          <svg viewBox="0 0 14 14"><path d="M7 1v12M1 7h12"/></svg>
+        </span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M3.8 3.4h16.4a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5h-5.3L12 21.3l-2.9-2.9H3.8a1.5 1.5 0 0 1-1.5-1.5v-12a1.5 1.5 0 0 1 1.5-1.5zM7 11.2h10"/></svg>
+          <span class="nav-badge">99+</span>
+        </span>
+        <span class="nav-label">Messages</span>
+      </a>
+      <a href="#" class="nav-item active" aria-current="page">
+        <svg viewBox="0 0 24 24" class="fill"><circle cx="12" cy="6.2" r="4.9"/><path d="M3 21.2c0-4.9 4-8.6 9-8.6s9 3.7 9 8.6q0 1.5-1.5 1.5h-15Q3 22.7 3 21.2z"/></svg>
+        <span class="nav-label">Profil</span>
+      </a>
+    </nav>
+
+    <!-- Écran : modifier le profil (bouton crayon) -->
+    <section class="screen" id="ecran-profil" aria-label="Modifier le profil">
+      <div class="screen-panel">
+        <header class="screen-bar">
+          <button class="screen-back" type="button" aria-label="Retour">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M15 4.5 7.5 12l7.5 7.5"/></svg>
+          </button>
+          <h2>Modifier le profil</h2>
+        </header>
+
+        <div class="edition-photo">
+          <label class="edition-avatar">
+            <img id="edition-avatar" src="images/avatar.jpg" alt="">
+            <span class="edition-avatar-icone">
+              <svg viewBox="0 0 24 24" class="stroke"><path d="M4 7.5h3l1.6-2.3h6.8L17 7.5h3a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.6"/></svg>
+            </span>
+            <input type="file" accept="image/*" id="champ-avatar" hidden>
+          </label>
+          <label for="champ-avatar" class="edition-photo-texte">Changer la photo</label>
+        </div>
+
+        <form class="formulaire" id="formulaire-profil" autocomplete="off">
+          <p class="section-titre">À propos de toi</p>
+          <label class="champ"><span class="champ-label">Nom</span><input name="nom" maxlength="30"></label>
+          <label class="champ"><span class="champ-label">Nom d'utilisateur</span><span class="champ-prefixe">@</span><input name="utilisateur" maxlength="24" autocapitalize="off" spellcheck="false"></label>
+          <label class="champ champ-haut"><span class="champ-label">Bio</span><textarea name="bio" rows="3"></textarea></label>
+          <label class="champ"><span class="champ-label">Lien</span><input name="lien" inputmode="url" placeholder="https://…" autocapitalize="off" spellcheck="false"></label>
+
+          <p class="section-titre">Statistiques</p>
+          <label class="champ"><span class="champ-label">Suivis</span><input name="suivis" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Followers</span><input name="followers" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">J'aime</span><input name="jaime" inputmode="decimal"></label>
+          <p class="champ-aide">Écris un nombre (ex. 16600) : il s'affiche comme sur TikTok (16,6 K). Tu peux aussi écrire directement « 16,6 K ».</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Écran : gérer les vidéos (bouton ≡) -->
+    <section class="screen" id="ecran-videos" aria-label="Mes vidéos">
+      <div class="screen-panel">
+        <header class="screen-bar">
+          <button class="screen-back" type="button" aria-label="Retour">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M15 4.5 7.5 12l7.5 7.5"/></svg>
+          </button>
+          <h2>Mes vidéos</h2>
+        </header>
+
+        <label class="ajout" id="bouton-ajout">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M12 5v14M5 12h14"/></svg>
+          <span id="ajout-texte">Ajouter une vidéo ou une image</span>
+          <input type="file" accept="image/*,video/*" multiple id="champ-ajout" hidden>
+        </label>
+        <p class="ajout-aide">Une image s'affiche telle quelle. Pour une vidéo, la miniature est sa première image.</p>
+
+        <p class="compteur" id="compteur-videos"></p>
+        <ul class="liste-videos" id="liste-videos"></ul>
+        <input type="file" accept="image/*,video/*" id="champ-remplacer" hidden>
+      </div>
+    </section>
+
+    <template id="modele-ligne">
+      <li class="ligne">
+        <button class="ligne-miniature" type="button" data-action="remplacer" title="Remplacer l'image ou la vidéo">
+          <img alt="">
+          <span class="ligne-type"></span>
+        </button>
+        <div class="ligne-infos">
+          <label class="ligne-vues">
+            <svg viewBox="0 0 10 12" aria-hidden="true"><path d="M1.3 1.3 8.9 6l-7.6 4.7z"/></svg>
+            <input type="text" inputmode="decimal" autocomplete="off" aria-label="Nombre de vues">
+            <span>vues</span>
+          </label>
+          <label class="ligne-epingle">
+            <input type="checkbox">
+            <span class="interrupteur" aria-hidden="true"></span>
+            Épinglée
+          </label>
+        </div>
+        <div class="ligne-actions">
+          <button type="button" class="action" data-action="details" aria-label="Modifier les détails (j'aime, commentaires…)">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M16.2 3.9a2.3 2.3 0 0 1 3.3 3.3L8.9 17.8l-4.6 1.3 1.3-4.6zM14.2 5.9l3.3 3.3"/></svg>
+          </button>
+          <button type="button" class="action" data-action="monter" aria-label="Monter">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>
+          </button>
+          <button type="button" class="action" data-action="descendre" aria-label="Descendre">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M12 5v14M5.5 12.5 12 19l6.5-6.5"/></svg>
+          </button>
+          <button type="button" class="action action-supprimer" data-action="supprimer" aria-label="Supprimer">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M4 6.5h16M9.5 6.5V4.8a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1.7M6.5 6.5l.9 12.6a1.5 1.5 0 0 0 1.5 1.4h6.2a1.5 1.5 0 0 0 1.5-1.4l.9-12.6M10 10.5v6M14 10.5v6"/></svg>
+          </button>
+        </div>
+      </li>
+    </template>
+
+    <!-- Écran : détails d'une vidéo (j'aime, commentaires, favoris…) -->
+    <section class="screen" id="ecran-details" aria-label="Détails de la vidéo">
+      <div class="screen-panel">
+        <header class="screen-bar">
+          <button class="screen-back" type="button" aria-label="Retour">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M15 4.5 7.5 12l7.5 7.5"/></svg>
+          </button>
+          <h2>Détails de la vidéo</h2>
+        </header>
+
+        <div class="details-apercu">
+          <button class="ligne-miniature details-miniature" type="button" id="details-miniature" title="Remplacer l'image ou la vidéo">
+            <img alt="">
+            <span class="ligne-type"></span>
+          </button>
+          <div class="details-apercu-texte">
+            <p>Touche la miniature pour la remplacer.</p>
+            <button type="button" class="details-voir" id="details-voir">
+              <svg viewBox="0 0 20 20" class="stroke"><path d="M5.5 3.5 16 10 5.5 16.5z"/></svg>
+              Voir la vidéo
+            </button>
+          </div>
+        </div>
+
+        <form class="formulaire" id="formulaire-details" autocomplete="off">
+          <p class="section-titre">Statistiques</p>
+          <label class="champ"><span class="champ-label">Vues</span><input name="vues" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">J'aime</span><input name="jaime" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Commentaires</span><input name="commentaires" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Favoris</span><input name="favoris" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Partages</span><input name="partages" inputmode="decimal" placeholder="Vide = bouton « ••• »"></label>
+
+          <p class="section-titre">Publication</p>
+          <label class="champ"><span class="champ-label">Date</span><input name="date" type="date"></label>
+          <label class="champ champ-haut"><span class="champ-label">Sous-titre</span><textarea name="sousTitre" rows="2" placeholder="Texte affiché sur la vidéo (facultatif)"></textarea></label>
+          <label class="champ champ-bascule"><span class="champ-label">Épinglée</span><input type="checkbox" name="epingle"><span class="interrupteur" aria-hidden="true"></span></label>
+          <label class="champ champ-bascule"><span class="champ-label">Cœur rouge (tu as aimé)</span><input type="checkbox" name="aime"><span class="interrupteur" aria-hidden="true"></span></label>
+          <label class="champ champ-bascule"><span class="champ-label">Signet jaune (dans tes favoris)</span><input type="checkbox" name="enFavori"><span class="interrupteur" aria-hidden="true"></span></label>
+
+          <p class="section-titre">Commentaires affichés sur la vidéo (3 maximum)</p>
+          <ul class="details-commentaires" id="details-commentaires"></ul>
+          <button type="button" class="ajout ajout-petit" id="ajouter-commentaire">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M12 5v14M5 12h14"/></svg>
+            Ajouter un commentaire
+          </button>
+          <input type="file" accept="image/*" id="champ-photo-commentaire" hidden>
+        </form>
+      </div>
+    </section>
+
+    <template id="modele-commentaire">
+      <li class="commentaire-edition">
+        <button type="button" class="commentaire-photo" data-action="photo" title="Changer la photo"><img alt=""></button>
+        <div class="commentaire-champs">
+          <input data-champ="nom" placeholder="Nom" maxlength="40" aria-label="Nom">
+          <input data-champ="texte" placeholder="Commentaire" maxlength="150" aria-label="Commentaire">
+        </div>
+        <button type="button" class="action action-supprimer" data-action="supprimer" aria-label="Supprimer ce commentaire">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M4 6.5h16M9.5 6.5V4.8a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1.7M6.5 6.5l.9 12.6a1.5 1.5 0 0 0 1.5 1.4h6.2a1.5 1.5 0 0 0 1.5-1.4l.9-12.6M10 10.5v6M14 10.5v6"/></svg>
+        </button>
+      </li>
+    </template>
+
+    <!-- Lecteur plein écran (clic sur une miniature), on fait défiler les vidéos vers le haut / le bas -->
+    <div class="lecteur" id="lecteur" hidden>
+      <div class="lecteur-fil" id="lecteur-fil"></div>
+      <div class="lecteur-haut">
+        <button class="lecteur-retour" type="button" aria-label="Retour">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M20.6 12H3.8M11.4 4.1 3.5 12l7.9 7.9"/></svg>
+        </button>
+        <div class="lecteur-recherche" role="search">
+          <svg viewBox="0 0 16 16" class="stroke"><circle cx="6.6" cy="6.6" r="5.1"/><path d="m10.4 10.4 3.8 3.8"/></svg>
+          <span class="lecteur-recherche-texte">Trouver du contenu associé</span>
+          <span class="lecteur-recherche-separateur"></span>
+          <span class="lecteur-recherche-bouton">Rechercher</span>
+        </div>
+      </div>
+    </div>
+
+    <template id="modele-diapo">
+      <section class="diapo">
+        <div class="diapo-scene">
+          <div class="diapo-media"></div>
+          <div class="diapo-pause" hidden>
+            <svg viewBox="0 0 48 48"><path d="M16 9.6c0-1.6 1.7-2.5 3-1.7l20.4 13.3c1.2.8 1.2 2.6 0 3.4L19 37.9c-1.3.9-3-.1-3-1.7z"/></svg>
+          </div>
+          <p class="diapo-sous-titre"></p>
+          <ul class="diapo-commentaires"></ul>
+          <div class="diapo-colonne">
+            <img class="diapo-avatar" alt="">
+            <button class="diapo-action diapo-jaime" type="button" aria-label="J'aime">
+              <svg viewBox="0 0 34 34"><path d="M17 29.8c-.5 0-1-.2-1.4-.5C11.4 26 2 19.4 2 11.8 2 7 5.6 3.2 10.2 3.2c2.8 0 5.2 1.3 6.8 3.4 1.6-2.1 4-3.4 6.8-3.4C28.4 3.2 32 7 32 11.8c0 7.6-9.4 14.2-13.6 17.5-.4.3-.9.5-1.4.5z"/></svg>
+              <span></span>
+            </button>
+            <button class="diapo-action diapo-commenter" type="button" aria-label="Commentaires">
+              <svg viewBox="0 0 34 34"><path fill-rule="evenodd" d="M17 3.5C9 3.5 2.6 8.9 2.6 15.6c0 6.4 5.8 11.6 13.2 12.1l2.3 3.3c.4.6 1.3.5 1.5-.2l.9-3.4c6.4-1.2 11.1-6 11.1-11.8C31.6 8.9 25.2 3.5 17 3.5zM11.1 13.5a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2zm5.9 0a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2zm5.9 0a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2z"/></svg>
+              <span></span>
+            </button>
+            <button class="diapo-action diapo-favori" type="button" aria-label="Favoris">
+              <svg viewBox="0 0 34 34"><path d="M6.2 5.6a2 2 0 0 1 2-2h17.6a2 2 0 0 1 2 2v21.4a1.1 1.1 0 0 1-1.8.9L17 21.6l-9 6.3a1.1 1.1 0 0 1-1.8-.9z"/></svg>
+              <span></span>
+            </button>
+            <button class="diapo-action diapo-partager" type="button" aria-label="Partager">
+              <svg viewBox="0 0 34 34"><path d="M18.6 4.6c-.6-.5-1.5-.1-1.5.7v5.6C8.2 11.6 3.2 17.3 3 28.5c0 .5.6.8 1 .4 2.8-3.4 6.8-5.5 13.1-5.6v5.7c0 .8.9 1.2 1.5.7l12.7-12.1c.4-.4.4-1 0-1.4z"/></svg>
+              <span></span>
+            </button>
+            <button class="diapo-plus" type="button" aria-label="Plus d'options">
+              <svg viewBox="0 0 23.2 6"><circle cx="3.1" cy="3" r="2.6"/><circle cx="11.6" cy="3" r="2.6"/><circle cx="20.1" cy="3" r="2.6"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="diapo-bas">
+          <img class="diapo-disque" alt="">
+          <p class="diapo-auteur"><strong></strong><span class="diapo-date"></span></p>
+          <div class="diapo-progression"><span></span></div>
+          <div class="diapo-ligne">
+            <span class="diapo-vues">
+              <svg viewBox="0 0 20 20" class="stroke"><path d="M4.3 2.5 17.6 10 4.3 17.5z"/></svg>
+              <span></span>
+            </span>
+            <button class="diapo-donnees" type="button">
+              <svg viewBox="0 0 20 20" class="stroke"><rect x="1.2" y="2" width="17.6" height="16" rx="2.6"/><path d="m4.6 13.8 4-4 2.6 2.4 4.4-4.8M12.6 7.2h3.2v3.2"/></svg>
+              Plus de données
+            </button>
+          </div>
+        </div>
+      </section>
+    </template>
+
+    <template id="modele-bulle">
+      <li class="bulle">
+        <img alt="">
+        <span class="bulle-texte"><span class="bulle-nom"></span><span class="bulle-message"></span></span>
+      </li>
+    </template>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  </div>
+  <script src="stockage.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
