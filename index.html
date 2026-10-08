@@ -39,7 +39,8 @@
         <button class="icon-btn" aria-label="Ajouter des amis">
           <svg viewBox="0 0 24 24" class="stroke"><circle cx="8.6" cy="6.4" r="3.9"/><path d="M1.9 21.4c0-4.6 3-7.6 6.9-7.6 1.8 0 3.3.5 4.5 1.5M18.3 13.6v8.2M14.2 17.7h8.2"/></svg>
         </button>
-        <button class="icon-btn" id="ouvrir-videos" aria-label="Gérer les vidéos">
+        <!-- Appui simple : panneau de droite. Appui long : mode édition (vidéos, récompenses…) -->
+        <button class="icon-btn" id="ouvrir-menu" aria-label="Menu">
           <svg viewBox="0 0 24 24" class="stroke thick"><path d="M3.2 5.6h17.6M3.2 11.9h17.6M3.2 18.2h17.6"/></svg>
         </button>
       </div>
@@ -70,7 +71,7 @@
         <p class="bio" id="profil-bio">Je te montre étape par étape à créer ton propre jeu sans coder avec l'IA et le monétiser avec Google adsense 👇👇</p>
         <a class="bio-link" id="profil-lien" href="https://gamebuild-delta.vercel.app/" target="_blank" rel="noopener">https://gamebuild-delta.vercel.app/</a>
 
-        <a class="studio-btn" href="#">
+        <a class="studio-btn" href="#" id="ouvrir-studio">
           <svg viewBox="0 0 13 12" aria-hidden="true">
             <defs>
               <linearGradient id="studio-grad" x1="0" y1="0" x2="0" y2="1">
@@ -111,7 +112,7 @@
 
       <section class="panel" id="panel-videos">
         <div class="grid" id="grid"></div>
-        <p class="grille-vide" id="grille-vide" hidden>Aucune vidéo pour l'instant.<br>Ajoute-en avec le bouton ≡ en haut à droite.</p>
+        <p class="grille-vide" id="grille-vide" hidden>Aucune vidéo pour l'instant.<br>Ajoute-en avec un appui long sur ≡ en haut à droite.</p>
       </section>
       <section class="panel empty" id="panel-empty" hidden>
         <div class="empty-icon" id="empty-icon"></div>
@@ -282,6 +283,20 @@
           <label class="champ champ-bascule"><span class="champ-label">Cœur rouge (tu as aimé)</span><input type="checkbox" name="aime"><span class="interrupteur" aria-hidden="true"></span></label>
           <label class="champ champ-bascule"><span class="champ-label">Signet jaune (dans tes favoris)</span><input type="checkbox" name="enFavori"><span class="interrupteur" aria-hidden="true"></span></label>
 
+          <p class="section-titre">Programme de récompenses</p>
+          <label class="champ"><span class="champ-label">Titre</span><input name="titre" maxlength="80" placeholder="Publication sans titre"></label>
+          <label class="champ"><span class="champ-label">Durée</span><input name="duree" placeholder="ex. 01:35" autocapitalize="off" spellcheck="false"></label>
+          <label class="champ"><span class="champ-label">Récompense standard</span><span class="champ-prefixe">$</span><input name="recStandard" inputmode="decimal" placeholder="0.00"></label>
+          <label class="champ"><span class="champ-label">Récompense supplémentaire</span><span class="champ-prefixe">$</span><input name="recSupplementaire" inputmode="decimal" placeholder="0.00"></label>
+          <label class="champ"><span class="champ-label">Vues admissibles</span><input name="vuesAdmissibles" inputmode="decimal" placeholder="Vide = « Moins de 1 000 »"></label>
+          <label class="champ champ-bascule"><span class="champ-label">Non éligible (écrit en rouge)</span><input type="checkbox" name="nonEligible"><span class="interrupteur" aria-hidden="true"></span></label>
+          <p class="champ-aide" id="details-rpm"></p>
+          <button type="button" class="bouton-dessin" id="dessiner-video">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M3.5 19.5h17M5 15.5l3.2-4.3 3.1 2.6 4.4-6.3 3.3 3.3"/></svg>
+            <span>Dessiner les 30 jours après la publication</span>
+            <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+          </button>
+
           <p class="section-titre">Commentaires affichés sur la vidéo (3 maximum)</p>
           <ul class="details-commentaires" id="details-commentaires"></ul>
           <button type="button" class="ajout ajout-petit" id="ajouter-commentaire">
@@ -379,10 +394,478 @@
       </li>
     </template>
 
+    <!-- Panneau de droite (appui simple sur ≡) -->
+    <div class="tiroir" id="tiroir">
+      <div class="tiroir-voile" id="tiroir-voile"></div>
+      <div class="tiroir-cadre">
+      <nav class="tiroir-panneau" aria-label="Menu">
+        <p class="tiroir-section">Ressources</p>
+        <button class="tiroir-ligne" type="button">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M3.4 8.4h16.2a1.4 1.4 0 0 1 1.4 1.4v9a1.4 1.4 0 0 1-1.4 1.4H4.8a1.4 1.4 0 0 1-1.4-1.4zM3.4 8.4V7.6a1.5 1.5 0 0 1 1.2-1.5l10.2-1.6a1.3 1.3 0 0 1 1.5 1.3v2.6M16.2 14.3H21"/></svg>
+          <span class="tiroir-libelle">Solde</span>
+          <span class="tiroir-valeur" id="tiroir-solde"></span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+        <hr class="tiroir-separateur">
+        <p class="tiroir-section">Outils personnels</p>
+        <button class="tiroir-ligne" type="button">
+          <svg viewBox="0 0 24 24" class="stroke"><circle cx="12" cy="12" r="9.3"/><path d="M12 6.6V12l3.6 3.3"/></svg>
+          <span class="tiroir-libelle">Centre des activités</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+        <button class="tiroir-ligne" type="button">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M7.4 18.9H6.6a4.7 4.7 0 0 1-.9-9.3 6.6 6.6 0 0 1 12.6 0 4.7 4.7 0 0 1-.9 9.3h-.8"/><path d="M12 10.6v8.9M8.9 16.5l3.1 3.1 3.1-3.1"/></svg>
+          <span class="tiroir-libelle">Vidéos hors ligne</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+        <button class="tiroir-ligne" type="button">
+          <svg viewBox="0 0 24 24" class="stroke"><rect x="4.4" y="4.4" width="6.3" height="6.3" rx="1.7"/><rect x="13.3" y="4.4" width="6.3" height="6.3" rx="1.7"/><rect x="4.4" y="13.3" width="6.3" height="6.3" rx="1.7"/><path d="M13.6 13.6h.1M16.6 13.6h3M13.6 16.5v3.1M16.6 16.5h.1M19.6 16.5v.1M16.6 19.6h3"/></svg>
+          <span class="tiroir-libelle">Ton code QR</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+        <hr class="tiroir-separateur">
+        <p class="tiroir-section">Outils de création et professionnels</p>
+        <button class="tiroir-ligne" type="button" id="tiroir-studio">
+          <svg viewBox="0 0 24 24" class="stroke"><circle cx="8.8" cy="6.9" r="3.9"/><path d="M2.3 20.6c0-4.3 2.7-7.2 6.5-7.2 1.4 0 2.6.4 3.6 1"/><path class="plein" d="m17.7 12.6 1.4 2.9 3.1.4-2.3 2.2.6 3.1-2.8-1.5-2.8 1.5.6-3.1-2.3-2.2 3.1-.4z"/></svg>
+          <span class="tiroir-libelle">TikTok Studio</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+        <button class="tiroir-ligne" type="button">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M12 21.3c-3.9 0-6.7-2.7-6.7-6.4 0-2.7 1.4-4.7 2.9-6.5.3 1.7 1.2 2.8 2.4 3.3-.2-3.4 1-6.3 3.6-8.6.3 3.2 1.8 4.7 3.1 6.3 1 1.3 1.6 3 1.6 5.5 0 3.8-2.9 6.4-6.9 6.4z"/></svg>
+          <span class="tiroir-libelle">Promouvoir</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+        <hr class="tiroir-separateur">
+        <button class="tiroir-ligne tiroir-ligne-seule" type="button">
+          <svg viewBox="0 0 24 24" class="stroke epais"><path d="M12 2.7c1 0 1.6 1.2 2.6 1.4 1 .3 2.2-.4 3 .2.9.6.6 1.9 1.2 2.8.6.8 2 1.1 2.2 2.1.3 1-.8 1.9-.8 2.8s1.1 1.8.8 2.8c-.3 1-1.6 1.3-2.2 2.1-.6.9-.3 2.2-1.2 2.8-.8.6-2-.1-3 .2-1 .2-1.6 1.4-2.6 1.4s-1.6-1.2-2.6-1.4c-1-.3-2.2.4-3-.2-.9-.6-.6-1.9-1.2-2.8-.6-.8-2-1.1-2.2-2.1-.3-1 .8-1.9.8-2.8s-1.1-1.8-.8-2.8c.3-1 1.6-1.3 2.2-2.1.6-.9.3-2.2 1.2-2.8.8-.6 2 .1 3-.2 1-.2 1.6-1.4 2.6-1.4z"/></svg>
+          <span class="tiroir-libelle">Paramètres et confidentialité</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+      </nav>
+      </div>
+    </div>
+
+    <!-- TikTok Studio -->
+    <section class="screen page-grise" id="ecran-studio" aria-label="TikTok Studio">
+      <div class="screen-panel">
+        <header class="page-haut">
+          <div class="page-barre">
+            <button class="screen-back page-retour" type="button" aria-label="Retour">
+              <svg viewBox="0 0 24 24" class="stroke"><path d="M15.4 3.8 7.2 12l8.2 8.2"/></svg>
+            </button>
+            <h2 class="page-titre">TikTok Studio</h2>
+            <button class="page-action" type="button" aria-label="Paramètres">
+              <svg viewBox="0 0 24 24" class="stroke epais"><path d="M12 2.7c1 0 1.6 1.2 2.6 1.4 1 .3 2.2-.4 3 .2.9.6.6 1.9 1.2 2.8.6.8 2 1.1 2.2 2.1.3 1-.8 1.9-.8 2.8s1.1 1.8.8 2.8c-.3 1-1.6 1.3-2.2 2.1-.6.9-.3 2.2-1.2 2.8-.8.6-2-.1-3 .2-1 .2-1.6 1.4-2.6 1.4s-1.6-1.2-2.6-1.4c-1-.3-2.2.4-3-.2-.9-.6-.6-1.9-1.2-2.8-.6-.8-2-1.1-2.2-2.1-.3-1 .8-1.9.8-2.8s-1.1-1.8-.8-2.8c.3-1 1.6-1.3 2.2-2.1.6-.9.3-2.2 1.2-2.8.8-.6 2 .1 3-.2 1-.2 1.6-1.4 2.6-1.4z"/></svg>
+            </button>
+          </div>
+          <div class="studio-onglets" role="tablist">
+            <button class="studio-onglet actif" type="button" role="tab" aria-selected="true">Publications</button>
+            <button class="studio-onglet" type="button" role="tab" aria-selected="false">LIVE</button>
+          </div>
+        </header>
+
+        <div class="page-chargement" hidden><span class="points-tiktok"></span></div>
+        <div class="page-contenu studio-contenu">
+          <article class="carte">
+            <h3 class="carte-titre carte-titre-lien">Données analytiques<svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg></h3>
+            <div class="analytique">
+              <div class="analytique-col">
+                <p class="analytique-libelle">Vues de publication</p>
+                <p class="analytique-valeur" id="studio-vues"></p>
+                <p class="analytique-evolution" id="studio-vues-evolution"></p>
+              </div>
+              <div class="analytique-col">
+                <p class="analytique-libelle">Followers nets</p>
+                <p class="analytique-valeur" id="studio-followers"></p>
+                <p class="analytique-evolution" id="studio-followers-evolution"></p>
+              </div>
+              <div class="analytique-col">
+                <p class="analytique-libelle">J'aime</p>
+                <p class="analytique-valeur" id="studio-jaime"></p>
+                <p class="analytique-evolution" id="studio-jaime-evolution"></p>
+              </div>
+            </div>
+            <div class="carte-pied">
+              <span>Ta publication récente</span>
+              <span class="carte-pied-droite">1 suggestion<svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg></span>
+            </div>
+          </article>
+
+          <article class="carte suggestion">
+            <img src="images/studio-suggestion.jpg" alt="">
+            <div class="suggestion-texte">
+              <p><span>Partage tes recommandations Film,</span><span>Série, TV et Anime et double tes récompenses</span></p>
+              <span class="lien-rouge">Participe</span>
+            </div>
+            <span class="suggestion-points"><span></span><span></span></span>
+          </article>
+
+          <article class="carte">
+            <h3 class="carte-titre carte-titre-lien">Monétisation<svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg></h3>
+            <div class="monetisation">
+              <div class="monetisation-carte rose">
+                <svg class="monetisation-deco" viewBox="0 0 172 186" aria-hidden="true"><path d="M112 40h44v160h-44V82l-30 9V58z"/></svg>
+                <svg class="monetisation-icone" viewBox="0 0 30 20"><path d="M9.6 3.4 27.4.5a1.2 1.2 0 0 1 1.4 1.2v12.9a4 3.6 0 1 1-2.8-3.4V6.6L12.4 8.8v8.2a4 3.6 0 1 1-2.8-3.4z"/></svg>
+                <p class="monetisation-titre">Travailler avec les artistes</p>
+                <p class="monetisation-texte"><span>Crée des publications</span><span>avec des sons et fais-toi rémunérer</span></p>
+                <span class="monetisation-bouton">Participer</span>
+              </div>
+              <div class="monetisation-carte beige">
+                <svg class="monetisation-deco" viewBox="0 0 172 186" aria-hidden="true"><circle cx="128" cy="118" r="58" fill="none" stroke-width="34"/></svg>
+                <svg class="monetisation-icone" viewBox="1.4 5.5 21.2 13"><path fill-rule="evenodd" d="M3.4 5.8h10.8a1.7 1.7 0 0 1 1.7 1.7v9a1.7 1.7 0 0 1-1.7 1.7H3.4a1.7 1.7 0 0 1-1.7-1.7v-9a1.7 1.7 0 0 1 1.7-1.7zm2.9 3.4v5.6l4.6-2.8zm11.2 1 4.8-3v9.6l-4.8-3z"/></svg>
+                <p class="monetisation-titre">Programme d'incitation LIVE</p>
+                <p class="monetisation-texte"><span>Participe pour tenter</span><span>d'obtenir des récompenses</span></p>
+                <span class="monetisation-bouton">Participer</span>
+              </div>
+            </div>
+            <div class="raccourcis">
+              <button class="raccourci" type="button">
+                <span class="raccourci-icone"><svg viewBox="0 0 24 24" class="stroke"><path d="M5.2 4.3h13.6a1.6 1.6 0 0 1 1.6 1.6v9.6a1.6 1.6 0 0 1-1.6 1.6h-7.3l-4.3 3.4v-3.4h-2a1.6 1.6 0 0 1-1.6-1.6V5.9a1.6 1.6 0 0 1 1.6-1.6z"/><path d="M8.6 13.4l6.3-5.9M11 7.4h3.9v3.9"/></svg></span>
+                <span class="raccourci-libelle">Service+</span>
+              </button>
+              <button class="raccourci" type="button" id="studio-programme">
+                <span class="raccourci-icone"><svg viewBox="0 0 24 24" class="stroke"><circle cx="12" cy="12" r="8.9"/><path class="plein" d="M12 7c.5 2.7 2.3 4.5 5 5-2.7.5-4.5 2.3-5 5-.5-2.7-2.3-4.5-5-5 2.7-.5 4.5-2.3 5-5z"/></svg></span>
+                <span class="raccourci-libelle">Programme de récompenses pour les créateurs</span>
+              </button>
+              <button class="raccourci" type="button">
+                <span class="raccourci-icone"><svg viewBox="0 0 24 24" class="stroke"><rect x="4.2" y="8.8" width="15.6" height="11.6" rx="1.8"/><path d="M8.6 8.8C6.4 8.2 6 5.2 8.3 4.7c1.8-.4 3.2 2.2 3.7 4.1.5-1.9 1.9-4.5 3.7-4.1 2.3.5 1.9 3.5-.3 4.1"/><path class="plein" d="M10.4 12.1v5.6l4.5-2.8z"/></svg></span>
+                <span class="raccourci-libelle">Cadeaux vidéo</span>
+              </button>
+              <button class="raccourci" type="button">
+                <span class="raccourci-icone"><svg viewBox="0 0 24 24" class="stroke"><rect x="3.4" y="8.6" width="17.2" height="4.6" rx="1.2"/><path d="M5 13.2v6.1a1.2 1.2 0 0 0 1.2 1.2h11.6a1.2 1.2 0 0 0 1.2-1.2v-6.1M12 8.6v11.9M8.6 8.6C6.4 8 6 5 8.3 4.5c1.8-.4 3.2 2.2 3.7 4.1.5-1.9 1.9-4.5 3.7-4.1 2.3.5 1.9 3.5-.3 4.1"/></svg></span>
+                <span class="raccourci-libelle">Récompenses LIVE</span>
+              </button>
+              <button class="raccourci" type="button">
+                <span class="raccourci-icone"><svg viewBox="0 0 24 24" class="stroke"><path d="M4.6 8.2h14.8l-1.1 12.1H5.7zM8.8 8.2V6.7a3.2 3.2 0 0 1 6.4 0v1.5"/></svg></span>
+                <span class="raccourci-libelle">Marketplace</span>
+              </button>
+            </div>
+            <button class="bouton-gris" type="button">Plus de façons d'être payé(e)</button>
+          </article>
+
+          <article class="carte">
+            <h3 class="carte-titre carte-titre-lien">Inspiration<svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg></h3>
+            <div class="pastilles inspiration-pastilles">
+              <span class="pastille active">Publications</span>
+              <span class="pastille">Créateurs</span>
+              <span class="pastille">Recherches</span>
+            </div>
+            <p class="inspiration-sous-titre">Pour toi</p>
+            <div class="inspiration">
+              <figure><img src="images/inspiration-1.jpg" alt=""><figcaption>À Qui Steal a Brainrot ça Marche ?</figcaption></figure>
+              <figure><img src="images/inspiration-2.jpg" alt=""><figcaption>RENOISANSEAU reçoit une nouvelle barbe</figcaption></figure>
+              <figure><img src="images/inspiration-3.jpg" alt=""><figcaption>Fc Dragon Ball vs Fc my hero academia</figcaption></figure>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Programme de récompenses pour les créateurs -->
+    <section class="screen page-grise" id="ecran-recompenses" aria-label="Programme de récompenses pour les créateurs">
+      <div class="screen-panel">
+        <header class="page-haut">
+          <div class="page-barre page-barre-double">
+            <button class="screen-back page-retour" type="button" aria-label="Retour">
+              <svg viewBox="0 0 24 24" class="stroke"><path d="M15.4 3.8 7.2 12l8.2 8.2"/></svg>
+            </button>
+            <div class="page-titres">
+              <h2 class="page-titre">Programme de Récompenses pour les créateurs</h2>
+              <p class="page-sous-titre" id="recompenses-maj"></p>
+            </div>
+            <button class="page-action" type="button" aria-label="Menu">
+              <svg viewBox="0 0 24 24" class="stroke epais"><path d="M3.2 5.6h17.6M3.2 11.9h17.6M3.2 18.2h17.6"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="page-chargement" hidden><span class="points-tiktok"></span></div>
+        <div class="page-contenu recompenses-contenu">
+          <article class="carte lance-toi" id="carte-lance-toi">
+            <svg class="lance-toi-icone" viewBox="0 0 24 24"><path d="M12 2.6c.8 0 1.4.6 1.4 1.4v.6a6.3 6.3 0 0 1 4.9 6.2v4.6l1.8 2.4c.5.6 0 1.5-.8 1.5H4.7c-.8 0-1.3-.9-.8-1.5l1.8-2.4v-4.6a6.3 6.3 0 0 1 4.9-6.2V4c0-.8.6-1.4 1.4-1.4zM9.4 20.6h5.2a2.6 2.6 0 0 1-5.2 0z"/></svg>
+            <h3 class="lance-toi-titre">Lance-toi</h3>
+            <button class="bouton-fermer" type="button" aria-label="Fermer" data-fermer-carte>
+              <svg viewBox="0 0 24 24" class="stroke"><path d="M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg>
+            </button>
+            <p class="lance-toi-texte">Bienvenue dans le Programme de Récompenses pour les créateurs ! Pour t'aider à te lancer, nous avons préparé une foire aux questions.</p>
+            <span class="lien-rouge">Consulter</span>
+          </article>
+
+          <article class="carte carte-estimees">
+            <div class="pastilles" id="recompenses-vues">
+              <button class="pastille active" type="button" data-vue="mois">Par mois</button>
+              <button class="pastille" type="button" data-vue="an">Par an</button>
+              <span class="pastille">Personnalisé<svg class="caret" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg></span>
+            </div>
+            <div class="estimees-entete">
+              <h3 class="carte-titre">Récompenses estimées<svg class="info" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.7"/><path d="M8 7.2v4.1M8 4.7v.1"/></svg></h3>
+              <div class="periode">
+                <button type="button" class="periode-fleche" id="periode-precedente" aria-label="Période précédente"><svg viewBox="0 0 8 14"><path d="M6.7 1.3 1.3 7l5.4 5.7"/></svg></button>
+                <span id="periode-texte"></span>
+                <button type="button" class="periode-fleche" id="periode-suivante" aria-label="Période suivante"><svg viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg></button>
+              </div>
+            </div>
+            <p class="montant-grand"><span class="montant-dollar">$</span><span id="estimees-total"></span><span class="variation" id="estimees-variation"></span></p>
+            <p class="plage" id="estimees-plage"></p>
+            <div class="legende">
+              <p><span class="carre standard"></span>Récompense standard<span class="legende-valeur" id="estimees-standard"></span></p>
+              <p><span class="carre supplementaire"></span>Récompense supplémentaire<span class="legende-valeur" id="estimees-supplementaire"></span></p>
+            </div>
+            <div class="graphique" id="graphique-estimees"></div>
+            <button class="bouton-gris" type="button">Voir les performances</button>
+          </article>
+
+          <article class="carte promo" id="carte-promo">
+            <img src="images/promo-recompenses.jpg" alt="">
+            <div class="promo-texte">
+              <p class="promo-titre">Gagne jusqu'à 4 500 € pour ton contenu de haute qualité !</p>
+              <p class="promo-sous-titre">Commence à récupérer plus de récompenses grâce à tes contenus originaux</p>
+              <span class="lien-rouge">En savoir plus</span>
+            </div>
+            <button class="bouton-fermer" type="button" aria-label="Fermer" data-fermer-carte>
+              <svg viewBox="0 0 24 24" class="stroke"><path d="M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg>
+            </button>
+          </article>
+
+          <article class="carte conseils" id="carte-conseils">
+            <button class="carte-titre conseils-entete" type="button" id="conseils-bascule" aria-expanded="true">
+              Conseils pour toi
+              <svg class="conseils-fleche" viewBox="0 0 14 8"><path d="M1.3 6.7 7 1.3l5.7 5.4"/></svg>
+            </button>
+            <div class="conseil">
+              <span class="conseil-icone"><svg viewBox="0 0 24 24"><circle cx="10" cy="9.2" r="3.3"/><path d="M4.4 18.6c0-3.5 2.4-5.9 5.6-5.9s5.6 2.4 5.6 5.9z"/><path d="M17.7 3.6c.3 1.4 1.1 2.2 2.5 2.5-1.4.3-2.2 1.1-2.5 2.5-.3-1.4-1.1-2.2-2.5-2.5 1.4-.3 2.2-1.1 2.5-2.5z"/></svg></span>
+              <div class="conseil-texte">
+                <p class="conseil-titre">Consulte les scores de tes vidéos<span class="badge-nouveau">Nouveau</span></p>
+                <p class="conseil-detail">Tu peux maintenant voir les scores de qualité du contenu, d'engagement de la vidéo et de valeur commerciale de chaque vidéo pour mieux comprendre les performances et le RPM. <span class="lien-bleu">En savoir plus</span></p>
+              </div>
+            </div>
+          </article>
+
+          <article class="carte">
+            <div class="carte-entete">
+              <h3 class="carte-titre">Paiements récents<svg class="info" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.7"/><path d="M8 7.2v4.1M8 4.7v.1"/></svg></h3>
+              <span class="lien-gris">Voir le Solde<svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg></span>
+            </div>
+            <ul class="paiements" id="liste-paiements"></ul>
+          </article>
+
+          <article class="carte">
+            <div class="carte-entete">
+              <h3 class="carte-titre">Vidéos récentes<svg class="info" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.7"/><path d="M8 7.2v4.1M8 4.7v.1"/></svg></h3>
+              <span class="lien-gris">Voir toutes les vidéos<svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg></span>
+            </div>
+            <p class="carte-description">Seules les vidéos éligibles publiées au cours de l'année écoulée sont répertoriées. Les récompenses indiquées peuvent changer après examen par la plateforme.</p>
+            <div class="pastilles pastilles-filtres">
+              <span class="pastille">Les plus récentes<svg class="caret" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg></span>
+              <span class="pastille">Vidéos éligibles<svg class="caret" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg></span>
+            </div>
+            <ul class="videos-recompenses" id="liste-videos-recompenses"></ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <template id="modele-video-recompense">
+      <li>
+        <button class="video-recompense" type="button">
+          <span class="video-recompense-miniature"><img alt=""><span class="duree"></span></span>
+          <span class="video-recompense-infos">
+            <span class="video-recompense-titre"></span>
+            <span class="video-recompense-date"></span>
+            <span class="video-recompense-chiffres">
+              <span><strong class="vr-total"></strong>Total des récompenses</span>
+              <span><strong class="vr-rpm"></strong>RPM</span>
+            </span>
+            <span class="non-eligible">Non éligible</span>
+          </span>
+        </button>
+      </li>
+    </template>
+
+    <!-- Récompenses par vidéo -->
+    <section class="screen page-grise" id="ecran-recompense-video" aria-label="Récompenses par vidéo">
+      <div class="screen-panel">
+        <header class="page-haut">
+          <div class="page-barre">
+            <button class="screen-back page-retour" type="button" aria-label="Retour">
+              <svg viewBox="0 0 24 24" class="stroke"><path d="M15.4 3.8 7.2 12l8.2 8.2"/></svg>
+            </button>
+            <h2 class="page-titre">Récompenses par vidéo</h2>
+          </div>
+        </header>
+
+        <div class="page-chargement" hidden><span class="points-tiktok"></span></div>
+        <div class="page-contenu">
+          <div class="pv-entete">
+            <img id="pv-miniature" alt="">
+            <div class="pv-entete-texte">
+              <p class="pv-titre" id="pv-titre"></p>
+              <p class="pv-date" id="pv-date"></p>
+            </div>
+          </div>
+
+          <article class="carte">
+            <h3 class="carte-titre">Total des récompenses</h3>
+            <p class="montant-grand"><span class="montant-dollar">$</span><span id="pv-total"></span></p>
+            <p class="plage" id="pv-maj"></p>
+            <div class="legende">
+              <p class="legende-entete">Récompenses de créateurs<span class="legende-valeur" id="pv-createurs"></span></p>
+              <p><span class="carre standard"></span>Récompense standard<span class="legende-valeur" id="pv-standard"></span></p>
+              <p><span class="carre supplementaire"></span>Récompense supplémentaire<span class="legende-valeur" id="pv-supplementaire"></span></p>
+            </div>
+          </article>
+
+          <article class="carte">
+            <h3 class="carte-titre">Calcul des récompenses<svg class="info" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.7"/><path d="M8 7.2v4.1M8 4.7v.1"/></svg></h3>
+            <div class="calcul">
+              <div><p class="calcul-libelle">Récompenses</p><p class="calcul-valeur" id="pv-calcul-recompenses"></p></div>
+              <div><p class="calcul-libelle">RPM</p><p class="calcul-valeur gris" id="pv-rpm"></p></div>
+              <div><p class="calcul-libelle">Vues admissibles</p><p class="calcul-valeur gris" id="pv-vues"></p></div>
+            </div>
+            <p class="calcul-message" id="pv-message">Calcul des données en cours. Reviens plus tard.</p>
+          </article>
+
+          <article class="carte">
+            <div class="carte-entete carte-entete-haute">
+              <h3 class="carte-titre">Récompenses au fil du temps</h3>
+              <span class="selecteur">30 premiers jours<svg class="caret" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg></span>
+            </div>
+            <div class="graphique" id="graphique-video"></div>
+          </article>
+
+          <article class="carte carte-lien">
+            <span>Pour plus d'indicateurs de performance, consulte les données analytiques de la vidéo</span>
+            <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mode édition (appui long sur ≡) -->
+    <section class="screen" id="ecran-edition" aria-label="Mode édition">
+      <div class="screen-panel">
+        <header class="screen-bar">
+          <button class="screen-back" type="button" aria-label="Retour">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M15 4.5 7.5 12l7.5 7.5"/></svg>
+          </button>
+          <h2>Mode édition</h2>
+        </header>
+        <p class="edition-intro">Cet écran s'ouvre avec un appui long sur ≡. Un appui simple ouvre le menu, comme sur TikTok.</p>
+        <button class="edition-entree" type="button" data-ouvrir="videos">
+          <span class="edition-entree-texte"><strong>Mes vidéos</strong>Ajouter, supprimer, vues, j'aime, commentaires et récompenses de chaque vidéo</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+        <button class="edition-entree" type="button" data-ouvrir="recompenses">
+          <span class="edition-entree-texte"><strong>Solde, Studio et récompenses</strong>Solde du menu, statistiques de TikTok Studio, récompenses du mois et paiements</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+        <button class="edition-entree" type="button" data-ouvrir="profil">
+          <span class="edition-entree-texte"><strong>Profil</strong>Nom, nom d'utilisateur, statistiques, bio, lien et photo</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Éditeur : solde, statistiques de TikTok Studio, récompenses du mois, paiements -->
+    <section class="screen" id="ecran-edition-recompenses" aria-label="Solde, Studio et récompenses">
+      <div class="screen-panel">
+        <header class="screen-bar">
+          <button class="screen-back" type="button" aria-label="Retour">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M15 4.5 7.5 12l7.5 7.5"/></svg>
+          </button>
+          <h2>Solde, Studio et récompenses</h2>
+        </header>
+        <form class="formulaire" id="formulaire-recompenses" autocomplete="off">
+          <p class="section-titre">Menu ≡</p>
+          <label class="champ"><span class="champ-label">Solde</span><input name="solde" inputmode="decimal"><span class="champ-suffixe">$US</span></label>
+
+          <p class="section-titre">TikTok Studio · données des 7 derniers jours</p>
+          <label class="champ"><span class="champ-label">Vues de publication</span><input name="vuesPublication" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Évolution des vues</span><input name="vuesEvolution"><span class="champ-suffixe">%</span></label>
+          <label class="champ"><span class="champ-label">Followers nets</span><input name="followersNets"></label>
+          <label class="champ"><span class="champ-label">Évolution des followers</span><input name="followersEvolution"><span class="champ-suffixe">%</span></label>
+          <label class="champ"><span class="champ-label">J'aime</span><input name="jaimeStudio" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Évolution des j'aime</span><input name="jaimeEvolution"><span class="champ-suffixe">%</span></label>
+          <p class="champ-aide">Évolution : écris -60 pour « ▼ 60 % » ou 25 pour « ▲ 25 % ».</p>
+
+          <p class="section-titre" id="edition-mois-titre">Récompenses estimées du mois</p>
+          <label class="champ"><span class="champ-label">Récompense standard</span><span class="champ-prefixe">$</span><input name="moisStandard" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Récompense supplémentaire</span><span class="champ-prefixe">$</span><input name="moisSupplementaire" inputmode="decimal"></label>
+          <p class="champ-aide">Le montant est réparti jour par jour sur le graphique, jusqu'à hier. Pour choisir toi-même la forme :</p>
+          <button type="button" class="bouton-dessin" id="dessiner-mois">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M3.5 19.5h17M5 15.5l3.2-4.3 3.1 2.6 4.4-6.3 3.3 3.3"/></svg>
+            <span>Dessiner le graphique au doigt</span>
+            <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+          </button>
+
+          <p class="section-titre">Paiements récents</p>
+          <label class="champ"><span class="champ-label" data-mois-paiement="1"></span><span class="champ-prefixe">$</span><input name="paiement1" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label" data-mois-paiement="2"></span><span class="champ-prefixe">$</span><input name="paiement2" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label" data-mois-paiement="3"></span><span class="champ-prefixe">$</span><input name="paiement3" inputmode="decimal"></label>
+          <p class="champ-aide">Les récompenses de chaque vidéo se modifient dans Mes vidéos, avec le crayon ✎ de la vidéo.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Éditeur : dessiner les montants jour par jour (graphique du mois ou d'une vidéo) -->
+    <section class="screen" id="ecran-graphique" aria-label="Graphique jour par jour">
+      <div class="screen-panel">
+        <header class="screen-bar">
+          <button class="screen-back" type="button" aria-label="Retour">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M15 4.5 7.5 12l7.5 7.5"/></svg>
+          </button>
+          <h2 id="ge-titre">Graphique jour par jour</h2>
+        </header>
+
+        <div class="ge-periode" id="ge-periode">
+          <button type="button" class="periode-fleche" id="ge-precedent" aria-label="Mois précédent"><svg viewBox="0 0 8 14"><path d="M6.7 1.3 1.3 7l5.4 5.7"/></svg></button>
+          <span id="ge-periode-texte"></span>
+          <button type="button" class="periode-fleche" id="ge-suivant" aria-label="Mois suivant"><svg viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg></button>
+        </div>
+
+        <p class="champ-aide ge-explication" id="ge-explication"></p>
+
+        <label class="champ"><span class="champ-label"><span class="carre standard"></span>Standard</span><span class="champ-prefixe">$</span><input id="ge-total-standard" inputmode="decimal" autocomplete="off"></label>
+        <label class="champ"><span class="champ-label"><span class="carre supplementaire"></span>Supplémentaire</span><span class="champ-prefixe">$</span><input id="ge-total-supplementaire" inputmode="decimal" autocomplete="off"></label>
+        <label class="champ"><span class="champ-label">Total</span><span class="champ-prefixe">$</span><input id="ge-total" inputmode="decimal" autocomplete="off"></label>
+        <p class="champ-aide">Change un montant pour agrandir ou réduire sa couleur d'un coup : la forme du graphique est gardée.</p>
+
+        <div class="ge-types" id="ge-types" role="group" aria-label="Couleur à dessiner">
+          <button type="button" data-type="standard" aria-pressed="true"><span class="carre standard"></span>Standard</button>
+          <button type="button" data-type="supplementaire" aria-pressed="false"><span class="carre supplementaire"></span>Supplémentaire</button>
+        </div>
+        <p class="champ-aide" id="ge-consigne"></p>
+
+        <div class="ge-graphique" id="ge-graphique"></div>
+        <p class="champ-aide" id="ge-vide" hidden>Pas encore de jour à dessiner : les montants commencent le lendemain de la publication.</p>
+
+        <div class="ge-jour">
+          <p class="ge-jour-entete"><span id="ge-jour-date"></span><span id="ge-jour-total"></span></p>
+          <label class="ge-jour-champ"><span class="carre standard"></span><span class="ge-jour-libelle">Standard</span><span>$</span><input id="ge-jour-standard" inputmode="decimal" autocomplete="off" aria-label="Récompense standard du jour choisi"></label>
+          <label class="ge-jour-champ"><span class="carre supplementaire"></span><span class="ge-jour-libelle">Supplémentaire</span><span>$</span><input id="ge-jour-supplementaire" inputmode="decimal" autocomplete="off" aria-label="Récompense supplémentaire du jour choisi"></label>
+        </div>
+        <p class="champ-aide">Touche une barre pour choisir un jour et taper ses montants exacts.</p>
+
+        <p class="section-titre" id="ge-modeles-titre">Formes toutes prêtes (le total ne change pas)</p>
+        <div class="ge-modeles" id="ge-modeles">
+          <button type="button" data-forme="regulier">Régulier</button>
+          <button type="button" data-forme="hausse">En hausse</button>
+          <button type="button" data-forme="baisse">En baisse</button>
+          <button type="button" data-forme="viral">Viral</button>
+          <button type="button" data-forme="pic">Pic</button>
+          <button type="button" data-forme="aleatoire">Aléatoire</button>
+          <button type="button" data-forme="lisser">Lisser</button>
+          <button type="button" data-forme="copier">Comme l'autre couleur</button>
+          <button type="button" data-forme="effacer">Tout à 0</button>
+        </div>
+      </div>
+    </section>
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   </div>
   <script src="stockage.js"></script>
   <script src="script.js"></script>
+  <script src="studio.js"></script>
 </body>
 </html>

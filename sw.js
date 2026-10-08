@@ -1,6 +1,6 @@
 // Service worker : rend l'application installable et utilisable sans connexion.
 // Change VERSION à chaque mise en ligne pour que les téléphones récupèrent les nouveaux fichiers.
-const VERSION = 'tiktok-v2';
+const VERSION = 'tiktok-v3';
 
 const FICHIERS = [
   './',
@@ -8,6 +8,7 @@ const FICHIERS = [
   './style.css',
   './stockage.js',
   './script.js',
+  './studio.js',
   './manifest.webmanifest',
   './images/avatar.jpg',
   './images/avatar-recadre.jpg',
@@ -21,6 +22,11 @@ const FICHIERS = [
   './images/video-7.jpg',
   './images/video-8.jpg',
   './images/video-9.jpg',
+  './images/studio-suggestion.jpg',
+  './images/promo-recompenses.jpg',
+  './images/inspiration-1.jpg',
+  './images/inspiration-2.jpg',
+  './images/inspiration-3.jpg',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/favicon-32.png',

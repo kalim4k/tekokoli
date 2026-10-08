@@ -27,6 +27,24 @@ const Stockage = (() => {
     { id: 'v9', type: 'image', image: 'images/video-9.jpg', vues: '192', epingle: false },
   ];
 
+  // Chiffres du panneau ≡ (solde), de TikTok Studio et du Programme de récompenses.
+  // Les évolutions sont en % sur 7 jours : négatif ou 0 = flèche vers le bas.
+  // Les récompenses par vidéo sont rangées dans chaque vidéo (recStandard, recSupplementaire…).
+  const recompensesParDefaut = {
+    solde: '0,94',
+    vuesPublication: '1454',
+    vuesEvolution: '-60',
+    followersNets: '-47',
+    followersEvolution: '0',
+    jaimeStudio: '12',
+    jaimeEvolution: '-79',
+    moisStandard: '0',
+    moisSupplementaire: '0',
+    paiement1: '0', // mois dernier
+    paiement2: '0', // il y a 2 mois
+    paiement3: '0', // il y a 3 mois
+  };
+
   let base = null;            // IDBDatabase, ou null si IndexedDB est indisponible
   const memoire = new Map();  // repli : rien n'est conservé après rechargement
 
@@ -89,20 +107,24 @@ const Stockage = (() => {
       base = 'indexedDB' in window ? await ouvrir() : null;
       let profil;
       let videos;
+      let recompenses;
       try {
         profil = await lire('donnees', 'profil');
         videos = await lire('donnees', 'videos');
+        recompenses = await lire('donnees', 'recompenses');
       } catch {
         base = null; // base inutilisable : on continue sans sauvegarde
       }
       return {
         profil: { ...profilParDefaut, ...profil },
         videos: videos ?? videosParDefaut.map((video) => ({ ...video })),
+        recompenses: { ...recompensesParDefaut, ...recompenses },
       };
     },
 
     enregistrerProfil: (profil) => ecrire('donnees', 'profil', profil),
     enregistrerVideos: (videos) => ecrire('donnees', 'videos', videos),
+    enregistrerRecompenses: (recompenses) => ecrire('donnees', 'recompenses', recompenses),
     lireFichier: (cle) => lire('fichiers', cle),
     ecrireFichier: (cle, blob) => ecrire('fichiers', cle, blob),
     supprimerFichier: (cle) => supprimer('fichiers', cle),

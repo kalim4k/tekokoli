@@ -1,7 +1,7 @@
 const $ = (selecteur, racine = document) => racine.querySelector(selecteur);
 
 // Données affichées : chargées depuis le navigateur (voir stockage.js)
-const etat = { profil: null, videos: [] };
+const etat = { profil: null, videos: [], recompenses: null };
 let urlAvatar = 'images/avatar.jpg';
 let urlAvatarRond = 'images/avatar-recadre.jpg'; // pour les petits ronds (sans la bulle de la capture)
 
@@ -102,6 +102,10 @@ async function sauvegarder(action) {
 }
 const sauverProfil = () => sauvegarder(() => Stockage.enregistrerProfil(etat.profil));
 const sauverVideos = () => sauvegarder(() => Stockage.enregistrerVideos(etat.videos));
+const sauverRecompenses = () => sauvegarder(() => Stockage.enregistrerRecompenses(etat.recompenses));
+
+// Prévient les écrans Studio / récompenses qu'une vidéo a changé (voir studio.js)
+const signalerVideosModifiees = () => document.dispatchEvent(new Event('videos-modifiees'));
 
 let avertissementAffiche = false;
 function avertirSiNonPersistant() {
@@ -181,7 +185,13 @@ async function photoReduite(fichier, tailleMax) {
   return versJpeg(image, image.naturalWidth, image.naturalHeight, tailleMax);
 }
 
-// Miniature d'une vidéo = sa toute première image
+// 95 secondes → "01:35" (durée affichée sur les miniatures des récompenses)
+function formaterDuree(secondes) {
+  const total = Math.max(0, Math.round(secondes));
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+}
+
+// Miniature d'une vidéo = sa toute première image (on note aussi sa durée)
 function premiereImage(fichier) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(fichier);
@@ -207,8 +217,9 @@ function premiereImage(fichier) {
     video.addEventListener('loadeddata', () => {
       // Se placer explicitement au tout début : certains navigateurs (Safari) ne dessinent rien sans ça
       video.addEventListener('seeked', () => {
+        const duree = Number.isFinite(video.duration) ? video.duration : 0;
         versJpeg(video, video.videoWidth, video.videoHeight, 720)
-          .then((blob) => terminer(null, blob), terminer);
+          .then((blob) => terminer(null, { miniature: blob, duree }), terminer);
       }, { once: true });
       video.currentTime = 0.001;
     }, { once: true });
@@ -218,7 +229,8 @@ function premiereImage(fichier) {
 
 async function preparerFichier(fichier) {
   if (estUneVideo(fichier)) {
-    return { type: 'video', miniature: await premiereImage(fichier), video: fichier };
+    const { miniature, duree } = await premiereImage(fichier);
+    return { type: 'video', miniature, video: fichier, duree };
   }
   return { type: 'image', miniature: await photoReduite(fichier, 720) };
 }
@@ -230,6 +242,7 @@ async function enregistrerMedias(video, medias) {
   oublierFichier(cleMiniature(video));
   oublierFichier(cleVideo(video));
   video.type = medias.type;
+  if (medias.duree) video.duree = formaterDuree(medias.duree);
   delete video.image;
   navigator.storage?.persist?.().catch(() => {});
 }
@@ -366,17 +379,33 @@ function mettreAJourCouleurTheme() {
   $('meta[name="theme-color"]').content = dessus?.id === 'lecteur' ? '#000000' : '#ffffff';
 }
 
-function ouvrirCalque(calque) {
+// Écrans et panneau ≡ : ouverture animée (classe "open"). Lecteur : simple affichage.
+const estAnime = (calque) => calque.classList.contains('screen') || calque.classList.contains('tiroir');
+
+function afficherCalque(calque, visible) {
+  if (estAnime(calque)) calque.classList.toggle('open', visible);
+  else calque.hidden = !visible;
+}
+
+// remplacer : l'écran du dessus est fermé et remplacé par le nouveau (ex. panneau ≡ → TikTok Studio)
+function ouvrirCalque(calque, { remplacer = false } = {}) {
   if (pileCalques.includes(calque)) return;
+  const remplace = remplacer ? pileCalques.pop() : null;
+  if (remplace) {
+    afficherCalque(remplace, false);
+    remplace.dispatchEvent(new Event('fermeture'));
+  }
   pileCalques.push(calque);
-  if (calque.classList.contains('screen')) calque.classList.add('open');
-  else calque.hidden = false;
+  // Le dernier écran ouvert passe toujours devant les autres, quelle que soit sa place dans la page
+  calque.style.zIndex = String(20 + pileCalques.length);
+  afficherCalque(calque, true);
   document.documentElement.classList.add('calque-ouvert');
   mettreAJourCouleurTheme();
   // Le bouton "retour" du téléphone ferme l'écran au lieu de quitter la page
   if (historiqueDisponible) {
     try {
-      history.pushState({ calque: calque.id }, '');
+      if (remplace) history.replaceState({ calque: calque.id }, '');
+      else history.pushState({ calque: calque.id }, '');
     } catch {
       historiqueDisponible = false;
     }
@@ -386,8 +415,7 @@ function ouvrirCalque(calque) {
 function fermerCalque() {
   const calque = pileCalques.pop();
   if (!calque) return;
-  if (calque.classList.contains('screen')) calque.classList.remove('open');
-  else calque.hidden = true;
+  afficherCalque(calque, false);
   if (!pileCalques.length) document.documentElement.classList.remove('calque-ouvert');
   mettreAJourCouleurTheme();
   calque.dispatchEvent(new Event('fermeture'));
@@ -472,7 +500,7 @@ async function creerDiapo(video) {
 
   // Comme TikTok, on ne coupe pas les mots composés ("trois-cent-mille") en fin de ligne
   const sousTitre = $('.diapo-sous-titre', diapo);
-  const morceaux = (video.sousTitre ?? '').trim().split(/(s+)/).map((morceau) => {
+  const morceaux = (video.sousTitre ?? '').trim().split(/(\s+)/).map((morceau) => {
     if (!morceau.includes('-')) return morceau;
     const insecable = document.createElement('span');
     insecable.style.whiteSpace = 'nowrap';
@@ -675,7 +703,10 @@ async function afficherListe() {
   $('#compteur-videos').textContent = total ? `${total} vidéo${total > 1 ? 's' : ''}` : 'Aucune vidéo';
 }
 
-const rafraichirVideos = () => Promise.all([afficherGrille(), afficherListe()]);
+const rafraichirVideos = () => {
+  signalerVideosModifiees();
+  return Promise.all([afficherGrille(), afficherListe()]);
+};
 
 function videoDeLigne(element) {
   const id = element.closest('.ligne')?.dataset.id;
@@ -815,11 +846,12 @@ listeVideos.addEventListener('click', (evenement) => {
   }
 });
 
-$('#ouvrir-videos').addEventListener('click', () => {
+// Ouvert depuis le mode édition (appui long sur ≡, voir studio.js)
+function ouvrirGestionVideos() {
   afficherListe();
   ouvrirCalque($('#ecran-videos'));
   avertirSiNonPersistant();
-});
+}
 
 /* ---------- Détails d'une vidéo (j'aime, commentaires, favoris, partages…) ---------- */
 
@@ -862,6 +894,7 @@ async function ouvrirDetails(video) {
     else champ.value = video[champ.name] ?? (['jaime', 'commentaires', 'favoris'].includes(champ.name) ? '0' : '');
   }
   await Promise.all([afficherApercuDetails(), afficherCommentairesEdition()]);
+  afficherAideRpm(video); // studio.js
   ouvrirCalque($('#ecran-details'));
 }
 
@@ -879,6 +912,7 @@ formulaireDetails.addEventListener('input', (evenement) => {
   else if (champ.type === 'date') video.date = champ.value ? `${champ.value}T12:00:00` : '';
   else video[champ.name] = champ.value;
   sauverVideos();
+  signalerVideosModifiees();
   if (champ.name === 'vues') mettreAJourVues(video);
   if (champ.name === 'epingle') afficherGrille();
 });
@@ -941,6 +975,7 @@ async function demarrer() {
   const donnees = await Stockage.charger();
   etat.profil = donnees.profil;
   etat.videos = donnees.videos;
+  etat.recompenses = donnees.recompenses;
   afficherProfil();
   await Promise.all([afficherAvatar(), afficherGrille()]);
 }
