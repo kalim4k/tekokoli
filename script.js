@@ -270,13 +270,23 @@ function afficherProfil() {
   lien.hidden = !profil.lien.trim();
 
   document.title = `${profil.nom.trim() || 'Profil'} (@${profil.utilisateur}) | TikTok`;
+  placerPastilleNom();
 }
 
+// Nom long : la pastille « 9+ » est passée sous le nom, avec de l'espace dessous comme sur TikTok
+function placerPastilleNom() {
+  const titre = $('.name');
+  titre.classList.toggle('nom-long', $('.name-badge', titre).offsetTop > $('#profil-nom').offsetTop + 10);
+}
+window.addEventListener('resize', placerPastilleNom);
+document.fonts?.ready.then(placerPastilleNom);
+
 async function afficherAvatar() {
-  const photo = await urlFichier('avatar');
-  urlAvatar = photo || 'images/avatar.jpg';
+  const photo = await urlFichier(Stockage.cleAvatar());
+  // Un compte ajouté n'a pas encore de photo : silhouette grise comme sur TikTok
+  urlAvatar = photo || (Stockage.estPrincipal ? 'images/avatar.jpg' : AVATAR_VIDE);
   // La photo d'origine contient la bulle de la capture en haut : version recadrée pour les petits ronds
-  urlAvatarRond = photo || 'images/avatar-recadre.jpg';
+  urlAvatarRond = photo || (Stockage.estPrincipal ? 'images/avatar-recadre.jpg' : AVATAR_VIDE);
   $('#profil-avatar').src = urlAvatar;
   $('#edition-avatar').src = urlAvatarRond;
 }
@@ -379,8 +389,8 @@ function mettreAJourCouleurTheme() {
   $('meta[name="theme-color"]').content = dessus?.id === 'lecteur' ? '#000000' : '#ffffff';
 }
 
-// Écrans et panneau ≡ : ouverture animée (classe "open"). Lecteur : simple affichage.
-const estAnime = (calque) => calque.classList.contains('screen') || calque.classList.contains('tiroir');
+// Écrans, panneau ≡ et feuille des comptes : ouverture animée (classe "open"). Lecteur : simple affichage.
+const estAnime = (calque) => ['screen', 'tiroir', 'feuille'].some((classe) => calque.classList.contains(classe));
 
 function afficherCalque(calque, visible) {
   if (estAnime(calque)) calque.classList.toggle('open', visible);
@@ -664,8 +674,8 @@ $('#champ-avatar').addEventListener('change', async (evenement) => {
   evenement.target.value = '';
   if (!fichier) return;
   try {
-    await Stockage.ecrireFichier('avatar', await photoReduite(fichier, 640));
-    oublierFichier('avatar');
+    await Stockage.ecrireFichier(Stockage.cleAvatar(), await photoReduite(fichier, 640));
+    oublierFichier(Stockage.cleAvatar());
     await afficherAvatar();
     afficherMessage('Photo de profil mise à jour');
   } catch (erreur) {
@@ -969,15 +979,19 @@ $('#ecran-details').addEventListener('fermeture', () => afficherListe());
 
 /* ---------- Démarrage ---------- */
 
-async function demarrer() {
-  configurerBarreDuHaut();
-  configurerOnglets();
-  const donnees = await Stockage.charger();
+// Affiche un compte (au démarrage, ou après « Changer de compte », voir comptes.js)
+async function afficherCompte(donnees) {
   etat.profil = donnees.profil;
   etat.videos = donnees.videos;
   etat.recompenses = donnees.recompenses;
   afficherProfil();
   await Promise.all([afficherAvatar(), afficherGrille()]);
+}
+
+async function demarrer() {
+  configurerBarreDuHaut();
+  configurerOnglets();
+  await afficherCompte(await Stockage.charger());
 }
 
 demarrer();

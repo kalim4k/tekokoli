@@ -147,12 +147,16 @@ svg.fill { fill: currentColor; }
   align-items: center;
   margin: 0;
   font-size: 39px;
-  font-weight: 800;
+  font-weight: 710;
   line-height: 44px;
-  letter-spacing: -0.25px;
+  letter-spacing: 0.11px;
 }
 
 .name { max-width: calc(100% - 112px); }
+
+/* Comme TikTok : si le nom et la pastille « 9+ » ne tiennent pas sur une ligne, la pastille passe dessous */
+.name { flex-wrap: wrap; row-gap: 12px; }
+.name.nom-long .name-badge { margin-top: 1.5px; margin-bottom: 13px; }
 
 /* Nom trop long : coupé avec « … » (le padding évite de rogner accents et jambages) */
 .name-text {
@@ -184,8 +188,9 @@ svg.fill { fill: currentColor; }
 .handle {
   margin: 0.5px 0 0;
   font-size: 13.4px;
+  font-weight: 500;
   line-height: 18px;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.33px;
   color: var(--muted);
   max-width: calc(100% - 112px);
   overflow: hidden;
@@ -207,9 +212,9 @@ svg.fill { fill: currentColor; }
 }
 .stats strong {
   font-size: 18.2px;
-  font-weight: 700;
+  font-weight: 550;
   line-height: 20px;
-  letter-spacing: -0.6px;
+  letter-spacing: -0.33px;
 }
 .stats span {
   font-size: 13.1px;
@@ -473,14 +478,14 @@ svg.fill { fill: currentColor; }
   padding-top: 6.3px;
   color: var(--muted);
   font-size: 10.55px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 14px;
-  letter-spacing: -0.1px;
+  letter-spacing: 0;
 }
 .nav-item > svg,
 .nav-icon { width: 24px; height: 24px; }
 .nav-label { margin-top: 1.5px; }
-.nav-item.active { color: var(--text); font-weight: 700; }
+.nav-item.active { color: var(--text); font-weight: 700; letter-spacing: -0.1px; }
 .nav-item.active .nav-label { font-size: 10.4px; }
 
 .nav-icon { position: relative; }
@@ -890,7 +895,7 @@ html.calque-ouvert body { overflow: hidden; }
   border: 1.6px solid #fff;
   border-radius: 10px;
   font-size: 15.5px;
-  font-weight: 600;
+  font-weight: 550;
   white-space: nowrap;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
 }
@@ -908,7 +913,7 @@ html.calque-ouvert body { overflow: hidden; }
   margin: 0 12.6px 0 14px;
   background: rgba(255, 255, 255, 0.5);
 }
-.lecteur-recherche-bouton { flex: none; font-weight: 700; }
+.lecteur-recherche-bouton { flex: none; font-weight: 600; letter-spacing: 0.23px; }
 
 /* Une diapo = une vidéo plein écran */
 .diapo {
@@ -990,7 +995,7 @@ html.calque-ouvert body { overflow: hidden; }
 }
 .diapo-action span {
   font-size: 12.2px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 17px;
   color: #fff;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.35);
@@ -1027,7 +1032,7 @@ html.calque-ouvert body { overflow: hidden; }
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 550;
   line-height: 16.7px;
   white-space: pre-line;
 }
@@ -1077,13 +1082,15 @@ html.calque-ouvert body { overflow: hidden; }
 }
 .bulle-nom {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
+  letter-spacing: 0.18px;
   line-height: 16px;
   color: rgba(255, 255, 255, 0.6);
 }
 .bulle-message {
   font-size: 14.2px;
-  font-weight: 700;
+  font-weight: 550;
+  letter-spacing: 0.26px;
   line-height: 19px;
 }
 
@@ -1119,11 +1126,12 @@ html.calque-ouvert body { overflow: hidden; }
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.diapo-auteur strong { font-weight: 800; }
+.diapo-auteur strong { font-weight: 600; letter-spacing: 0.44px; }
 .diapo-date {
   margin-left: 6.5px;
   font-size: 15.5px;
-  font-weight: 700;
+  font-weight: 500;
+  letter-spacing: 0.18px;
   color: rgba(255, 255, 255, 0.5);
 }
 .diapo-progression {
@@ -1170,7 +1178,8 @@ html.calque-ouvert body { overflow: hidden; }
   gap: 7.2px;
   margin-left: 17.4px;
   font-size: 13.8px;
-  font-weight: 700;
+  font-weight: 580;
+  letter-spacing: 0.15px;
 }
 .diapo-vues svg { width: 20px; height: 20px; stroke-width: 2.1; }
 .diapo-donnees {
@@ -1184,7 +1193,8 @@ html.calque-ouvert body { overflow: hidden; }
   background: #333;
   color: #fff;
   font-size: 14.2px;
-  font-weight: 700;
+  font-weight: 550;
+  letter-spacing: 0.19px;
 }
 .diapo-donnees svg { width: 19.8px; height: 19.8px; stroke-width: 1.8; }
 
@@ -1379,7 +1389,8 @@ main,
 .tiroir-section {
   margin: 0 0 1.75px;
   font-size: 14.3px;
-  font-weight: 650;
+  font-weight: 500;
+  letter-spacing: 0.32px;
   line-height: 20px;
   color: #808080;
 }
@@ -1398,7 +1409,8 @@ main,
   margin-left: 9.7px;
   overflow: hidden;
   font-size: 17.4px;
-  font-weight: 700;
+  font-weight: 550;
+  letter-spacing: 0.34px;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -1455,7 +1467,8 @@ svg.stroke.epais { stroke-width: 2.3; }
   margin: 0;
   overflow: hidden;
   font-size: 17.6px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: 0.155px;
   font-variation-settings: normal;
   line-height: 22px;
   white-space: nowrap;
@@ -1480,7 +1493,7 @@ svg.stroke.epais { stroke-width: 2.3; }
   padding-top: 4.6px;
   text-align: center;
 }
-.page-titres .page-titre { font-size: 16.4px; font-weight: 600; line-height: 20px; font-variation-settings: "opsz" 36; }
+.page-titres .page-titre { font-size: 16.4px; font-weight: 650; letter-spacing: -0.12px; line-height: 20px; font-variation-settings: "opsz" 36; }
 .page-sous-titre {
   margin: 0;
   overflow: hidden;
@@ -1505,7 +1518,8 @@ svg.stroke.epais { stroke-width: 2.3; }
   align-items: center;
   margin: 0;
   font-size: 17.6px;
-  font-weight: 700;
+  font-weight: 650;
+  letter-spacing: 0.13px;
   line-height: 24px;
   text-align: left;
 }
@@ -1526,7 +1540,7 @@ svg.stroke.epais { stroke-width: 2.3; }
   justify-content: space-between;
   gap: 12px;
 }
-.lien-rouge { color: var(--red); font-weight: 600; }
+.lien-rouge { color: var(--red); font-weight: 550; }
 .lien-bleu { color: #2a5bd7; font-weight: 600; }
 .lien-gris {
   display: flex;
@@ -1545,7 +1559,7 @@ svg.stroke.epais { stroke-width: 2.3; }
   border-radius: 8px;
   background: #f3f3f3;
   font-size: 17.2px;
-  font-weight: 600;
+  font-weight: 550;
 }
 .pastilles {
   display: flex;
@@ -1637,7 +1651,7 @@ svg.stroke.epais { stroke-width: 2.3; }
 }
 .studio-contenu { padding-top: 12.9px; }
 .studio-contenu .carte { margin-bottom: 10.4px; padding: 0 18px; border-radius: 13.6px; }
-.studio-contenu .carte-titre { padding-top: 17.5px; font-size: 19px; font-weight: 600; }
+.studio-contenu .carte-titre { padding-top: 17.5px; font-size: 19px; font-weight: 650; letter-spacing: -0.15px; }
 
 .analytique {
   display: flex;
@@ -1648,7 +1662,7 @@ svg.stroke.epais { stroke-width: 2.3; }
 .analytique-libelle {
   min-height: 36px;
   font-size: 14.2px;
-  font-weight: 600;
+  font-weight: 550;
   line-height: 18px;
 }
 .analytique-col .analytique-valeur {
@@ -1687,7 +1701,7 @@ svg.stroke.epais { stroke-width: 2.3; }
   padding: 16.6px 21px 14.6px 18px;
   border-top: 0.5px solid #e6e6e6;
   font-size: 15.7px;
-  font-weight: 600;
+  font-weight: 550;
   line-height: 20px;
 }
 .carte-pied-droite { display: flex; align-items: center; gap: 10px; font-weight: 400; }
@@ -1784,7 +1798,7 @@ svg.stroke.epais { stroke-width: 2.3; }
   border-radius: 999px;
   background: #fff;
   font-size: 16.3px;
-  font-weight: 600;
+  font-weight: 550;
 }
 .raccourcis {
   display: flex;
@@ -1869,7 +1883,7 @@ svg.stroke.epais { stroke-width: 2.3; }
   height: 16px;
   fill: #000;
 }
-.lance-toi-titre { margin: 0; font-size: 17.5px; font-weight: 600; line-height: 22px; }
+.lance-toi-titre { margin: 0; font-size: 17.5px; font-weight: 550; line-height: 22px; }
 .lance-toi-texte {
   margin: 3px 0 8px;
   font-size: 15.8px;
@@ -1924,7 +1938,8 @@ svg.stroke.epais { stroke-width: 2.3; }
   align-items: baseline;
   margin: 5.2px 0 0;
   font-size: 33px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: 0.27px;
   line-height: 36px;
   white-space: nowrap;
 }
@@ -1965,7 +1980,7 @@ svg.stroke.epais { stroke-width: 2.3; }
   color: #3a3a3a;
 }
 .legende-valeur { margin-left: auto; padding-left: 12px; font-size: 15px; color: #8a8a8a; }
-.legende .legende-entete { font-weight: 600; color: #000; }
+.legende .legende-entete { font-weight: 550; color: #000; }
 .legende-entete .legende-valeur { color: #000; font-weight: 500; }
 .carre {
   flex: none;
@@ -1976,7 +1991,7 @@ svg.stroke.epais { stroke-width: 2.3; }
 }
 .carre.standard { background: #0072da; }
 .carre.supplementaire { background: #10cce4; }
-.carte-estimees .bouton-gris { margin-top: 21.9px; font-size: 17.4px; font-weight: 650; }
+.carte-estimees .bouton-gris { margin-top: 21.9px; font-size: 17.4px; font-weight: 550; letter-spacing: 0.21px; }
 
 /* Graphique en barres (récompenses par jour) */
 .graphique {
@@ -2089,7 +2104,7 @@ svg.stroke.epais { stroke-width: 2.3; }
 }
 .promo-texte { min-width: 0; }
 .promo-texte p { margin: 0; }
-.promo-titre { font-size: 16.6px; font-weight: 600; line-height: 20px; }
+.promo-titre { font-size: 16.6px; font-weight: 550; line-height: 20px; }
 .promo-texte .promo-sous-titre {
   margin-top: 4px;
   overflow: hidden;
@@ -2306,7 +2321,7 @@ svg.stroke.epais { stroke-width: 2.3; }
 .calcul > div { flex: 1; min-width: 0; padding-right: 8px; }
 .calcul > div + div { padding-left: 13px; border-left: 0.5px solid #e2e2e2; }
 .calcul p { margin: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.calcul-libelle { font-size: 14.6px; font-weight: 600; line-height: 20px; }
+.calcul-libelle { font-size: 14.6px; font-weight: 550; line-height: 20px; }
 .calcul .calcul-valeur { margin-top: 2.1px; font-size: 17px; font-weight: 700; line-height: 24px; }
 .calcul .calcul-valeur.gris { font-size: 14px; font-weight: 400; color: #8a8a8a; }
 .calcul-message { margin: 16px 0 0; font-size: 14.4px; line-height: 20px; color: #8a8a8a; }
@@ -2319,7 +2334,8 @@ svg.stroke.epais { stroke-width: 2.3; }
   gap: 10px;
   margin-top: 8px;
   font-size: 15.8px;
-  font-weight: 600;
+  font-weight: 525;
+  letter-spacing: 0.12px;
 }
 .carte-lien {
   display: flex;
@@ -2547,3 +2563,130 @@ svg.stroke.epais { stroke-width: 2.3; }
 }
 .ge-modeles button:active { background: #e3e3e4; }
 .ge-modeles [data-forme='effacer'] { color: var(--red); }
+
+/* ---------- Changer de compte (icônes de personnes en haut du profil) ---------- */
+.feuille {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s 0.3s;
+}
+.feuille.open {
+  visibility: visible;
+  pointer-events: auto;
+  transition: none;
+}
+.feuille-voile {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.455);
+  opacity: 0;
+  transition: opacity var(--glisse);
+}
+.feuille.open .feuille-voile { opacity: 1; }
+/* Sur ordinateur, la feuille reste dans la colonne de la page */
+.feuille-cadre {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  pointer-events: none;
+}
+.feuille-panneau {
+  padding: 8px 0 calc(14px + env(safe-area-inset-bottom));
+  border-radius: 12px 12px 0 0;
+  background: #fff;
+  pointer-events: auto;
+  transform: translateY(100%);
+  transition: transform var(--glisse);
+}
+.feuille.open .feuille-panneau { transform: none; }
+.feuille-poignee {
+  display: block;
+  width: 36px;
+  height: 4px;
+  margin: 0 auto 12px;
+  border-radius: 2px;
+  background: #d6d6d8;
+}
+.feuille-titre {
+  margin: 0 0 6px;
+  font-size: 16.5px;
+  font-weight: 600;
+  line-height: 22px;
+  text-align: center;
+}
+.comptes-liste { margin: 0; padding: 0; list-style: none; }
+.compte {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 72px;
+  padding: 0 20px;
+  text-align: left;
+}
+.compte:active { background: #f4f4f5; }
+.compte-photo {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+}
+.compte-textes { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.compte-nom,
+.compte-utilisateur { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.compte-nom { font-size: 16px; font-weight: 550; line-height: 21px; }
+.compte-utilisateur { font-size: 13.5px; line-height: 18px; color: var(--muted); }
+.compte-coche {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  visibility: hidden;
+}
+.compte.actif .compte-coche { visibility: visible; }
+.compte-plus {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #f1f1f2;
+}
+.compte-plus svg { width: 24px; height: 24px; }
+
+/* Court chargement pendant le changement de compte */
+.chargement-compte {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  background: #fff;
+}
+.chargement-compte[hidden] { display: none; }
+
+.zone-compte { padding: 30px 0 40px; }
+.bouton-supprimer-compte {
+  display: block;
+  width: calc(100% - 34px);
+  height: 46px;
+  margin: 0 17px;
+  border-radius: 8px;
+  background: #f1f1f2;
+  color: var(--red);
+  font-size: 15px;
+  font-weight: 600;
+}

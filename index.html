@@ -32,11 +32,11 @@
       <!-- Nom affiché dans la barre quand on fait défiler la page -->
       <div class="topbar-titre" aria-hidden="true"><span id="topbar-nom">REMIALDE</span><span class="name-badge">9+</span></div>
       <div class="topbar-right">
-        <button class="visitors" aria-label="Visiteurs du profil">
+        <button class="visitors" id="ouvrir-visiteurs" aria-label="Changer de compte">
           <img src="images/visiteur.jpg" alt="">
           <span>99</span>
         </button>
-        <button class="icon-btn" aria-label="Ajouter des amis">
+        <button class="icon-btn" id="ouvrir-comptes" aria-label="Changer de compte">
           <svg viewBox="0 0 24 24" class="stroke"><circle cx="8.6" cy="6.4" r="3.9"/><path d="M1.9 21.4c0-4.6 3-7.6 6.9-7.6 1.8 0 3.3.5 4.5 1.5M18.3 13.6v8.2M14.2 17.7h8.2"/></svg>
         </button>
         <!-- Appui simple : panneau de droite. Appui long : mode édition (vidéos, récompenses…) -->
@@ -183,6 +183,10 @@
           <label class="champ"><span class="champ-label">J'aime</span><input name="jaime" inputmode="decimal"></label>
           <p class="champ-aide">Écris un nombre (ex. 16600) : il s'affiche comme sur TikTok (16,6 K). Tu peux aussi écrire directement « 16,6 K ».</p>
         </form>
+        <div class="zone-compte" id="zone-supprimer-compte" hidden>
+          <button type="button" class="bouton-supprimer-compte" id="supprimer-compte">Supprimer ce compte</button>
+          <p class="champ-aide">Efface ce compte de l'appli (profil, vidéos, récompenses). Les autres comptes ne changent pas.</p>
+        </div>
       </div>
     </section>
 
@@ -861,11 +865,38 @@
       </div>
     </section>
 
+    <!-- Changer de compte (icônes de personnes en haut du profil) -->
+    <div class="feuille" id="feuille-comptes" role="dialog" aria-label="Changer de compte">
+      <div class="feuille-voile" id="feuille-voile"></div>
+      <div class="feuille-cadre">
+        <div class="feuille-panneau">
+          <span class="feuille-poignee" aria-hidden="true"></span>
+          <h2 class="feuille-titre">Changer de compte</h2>
+          <ul class="comptes-liste" id="comptes-liste"></ul>
+          <button type="button" class="compte compte-ajouter" id="ajouter-compte">
+            <span class="compte-plus"><svg viewBox="0 0 24 24" class="stroke"><path d="M12 5v14M5 12h14"/></svg></span>
+            <span class="compte-nom">Ajouter un compte</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <template id="modele-compte">
+      <li>
+        <button type="button" class="compte">
+          <img class="compte-photo" alt="">
+          <span class="compte-textes"><span class="compte-nom"></span><span class="compte-utilisateur"></span></span>
+          <svg class="compte-coche" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+        </button>
+      </li>
+    </template>
+    <div class="chargement-compte" id="chargement-compte" hidden><span class="points-tiktok"></span></div>
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   </div>
   <script src="stockage.js"></script>
   <script src="script.js"></script>
   <script src="studio.js"></script>
+  <script src="comptes.js"></script>
 </body>
 </html>
