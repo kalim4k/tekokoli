@@ -1,7 +1,7 @@
 const $ = (selecteur, racine = document) => racine.querySelector(selecteur);
 
 // Données affichées : chargées depuis le navigateur (voir stockage.js)
-const etat = { profil: null, videos: [], recompenses: null };
+const etat = { profil: null, videos: [], recompenses: null, favoris: [] };
 let urlAvatar = 'images/avatar.jpg';
 let urlAvatarRond = 'images/avatar-recadre.jpg'; // pour les petits ronds (sans la bulle de la capture)
 
@@ -50,7 +50,7 @@ function ajusterCompteur(valeur, delta) {
   return String(Math.max(0, Number(chiffres) + delta));
 }
 
-// Date de publication → "Il y a 5 j", "Il y a 3 h", "Il y a 2 sem.", "08-10"…
+// Date de publication → "Il y a 5 j", "Il y a 3 h", puis mois-jour "11-02" après une semaine (comme TikTok)
 function ilYa(dateTexte) {
   if (!dateTexte) return '';
   const date = new Date(dateTexte);
@@ -62,10 +62,9 @@ function ilYa(dateTexte) {
   if (heures < 24) return `Il y a ${Math.floor(heures)} h`;
   const jours = heures / 24;
   if (jours < 7) return `Il y a ${Math.floor(jours)} j`;
-  if (jours < 28) return `Il y a ${Math.floor(jours / 7)} sem.`;
   const jj = String(date.getDate()).padStart(2, '0');
   const mm = String(date.getMonth() + 1).padStart(2, '0');
-  return date.getFullYear() === new Date().getFullYear() ? `${jj}-${mm}` : `${date.getFullYear()}-${mm}-${jj}`;
+  return date.getFullYear() === new Date().getFullYear() ? `${mm}-${jj}` : `${date.getFullYear()}-${mm}-${jj}`;
 }
 
 // Valeur pour un champ <input type="date"> (AAAA-MM-JJ, heure locale)
@@ -103,6 +102,7 @@ async function sauvegarder(action) {
 const sauverProfil = () => sauvegarder(() => Stockage.enregistrerProfil(etat.profil));
 const sauverVideos = () => sauvegarder(() => Stockage.enregistrerVideos(etat.videos));
 const sauverRecompenses = () => sauvegarder(() => Stockage.enregistrerRecompenses(etat.recompenses));
+const sauverFavoris = () => sauvegarder(() => Stockage.enregistrerFavoris(etat.favoris));
 
 // Prévient les écrans Studio / récompenses qu'une vidéo a changé (voir studio.js)
 const signalerVideosModifiees = () => document.dispatchEvent(new Event('videos-modifiees'));
@@ -291,8 +291,8 @@ async function afficherAvatar() {
   $('#edition-avatar').src = urlAvatarRond;
 }
 
-async function afficherGrille() {
-  const vignettes = await Promise.all(etat.videos.map(async (video) => {
+async function creerVignettes(videos) {
+  return Promise.all(videos.map(async (video) => {
     const vignette = document.createElement('a');
     vignette.className = 'thumb';
     vignette.href = '#';
@@ -317,7 +317,10 @@ async function afficherGrille() {
     vignette.append(vues);
     return vignette;
   }));
-  $('#grid').replaceChildren(...vignettes);
+}
+
+async function afficherGrille() {
+  $('#grid').replaceChildren(...await creerVignettes(etat.videos));
   $('#grille-vide').hidden = etat.videos.length > 0;
 }
 
@@ -354,6 +357,20 @@ function configurerBarreDuHaut() {
   }, { rootMargin: `-${barre.offsetHeight}px 0px 0px 0px` }).observe($('.name'));
 }
 
+// Contenu sous les onglets : grille de mes vidéos, grille des favoris, ou message « vide »
+function afficherPanneau(onglet) {
+  const nom = onglet.dataset.tab;
+  const grilleFavoris = nom === 'favoris' && etat.favoris.length > 0;
+  $('#panel-videos').hidden = nom !== 'videos';
+  $('#panel-favoris').hidden = !grilleFavoris;
+  $('#panel-empty').hidden = nom === 'videos' || grilleFavoris;
+  if (nom !== 'videos') {
+    $('#empty-icon').innerHTML = onglet.innerHTML;
+    $('#empty-title').textContent = etatsVides[nom].titre;
+    $('#empty-text').textContent = etatsVides[nom].texte;
+  }
+}
+
 function configurerOnglets() {
   const onglets = [...document.querySelectorAll('.tab')];
   const indicateur = $('.tab-indicator');
@@ -365,17 +382,15 @@ function configurerOnglets() {
         autre.setAttribute('aria-selected', autre === onglet);
       });
       indicateur.style.transform = `translateX(${index * 100}%)`;
-
-      const nom = onglet.dataset.tab;
-      $('#panel-videos').hidden = nom !== 'videos';
-      $('#panel-empty').hidden = nom === 'videos';
-      if (nom !== 'videos') {
-        $('#empty-icon').innerHTML = onglet.innerHTML;
-        $('#empty-title').textContent = etatsVides[nom].titre;
-        $('#empty-text').textContent = etatsVides[nom].texte;
-      }
+      afficherPanneau(onglet);
     });
   });
+}
+
+// Onglet Favoris : vidéos d'autres comptes (ajoutées dans Mode édition → Favoris, voir favoris.js)
+async function afficherGrilleFavoris() {
+  $('#grid-favoris').replaceChildren(...await creerVignettes(etat.favoris));
+  afficherPanneau($('.tab.active'));
 }
 
 /* ---------- Écrans empilés par-dessus la page (éditeurs, lecteur) ---------- */
@@ -447,7 +462,9 @@ document.querySelectorAll('.screen-back, .lecteur-retour').forEach((bouton) => {
 
 /* ---------- Lecteur : une "diapo" par vidéo, on fait défiler vers le haut / le bas ---------- */
 
-const lecteur = { observateur: null, active: null, animation: 0 };
+// mode "videos" : mes vidéos. mode "favoris" : vidéos d'autres comptes (diapos de favoris.js)
+const lecteur = { observateur: null, active: null, animation: 0, mode: 'videos', liste: [] };
+const RECHERCHE_PAR_DEFAUT = 'Trouver du contenu associé';
 const filLecteur = $('#lecteur-fil');
 
 function ajusterCadrage(media) {
@@ -472,10 +489,8 @@ function remplirActions(diapo, video) {
   $('.diapo-favori', diapo).classList.toggle('actif', Boolean(video.enFavori));
 }
 
-async function creerDiapo(video) {
-  const diapo = $('#modele-diapo').content.firstElementChild.cloneNode(true);
-  diapo.dataset.id = video.id;
-
+// Image ou vidéo plein écran d'une diapo (mes vidéos et favoris)
+async function placerMedia(diapo, video) {
   const miniature = await urlMiniature(video);
   let media;
   if (video.type === 'video') {
@@ -498,6 +513,12 @@ async function creerDiapo(video) {
     media.src = miniature;
   }
   $('.diapo-media', diapo).append(media);
+}
+
+async function creerDiapo(video) {
+  const diapo = $('#modele-diapo').content.firstElementChild.cloneNode(true);
+  diapo.dataset.id = video.id;
+  await placerMedia(diapo, video);
 
   $('.diapo-avatar', diapo).src = urlAvatarRond;
   $('.diapo-disque', diapo).src = urlAvatarRond;
@@ -533,7 +554,7 @@ async function creerDiapo(video) {
   return diapo;
 }
 
-const videoDeDiapo = (diapo) => etat.videos.find((video) => video.id === diapo.dataset.id);
+const videoDeDiapo = (diapo) => lecteur.liste.find((video) => video.id === diapo.dataset.id);
 
 async function chargerVideo(diapo) {
   const media = $('video', diapo);
@@ -551,6 +572,10 @@ async function activerDiapo(diapo) {
   const precedente = lecteur.active;
   lecteur.active = diapo;
   if (precedente) $('video', precedente)?.pause();
+  // Vidéo d'un autre compte : la barre du haut propose sa propre recherche
+  if (lecteur.mode === 'favoris') {
+    $('.lecteur-recherche-texte').textContent = videoDeDiapo(diapo)?.recherche?.trim() || RECHERCHE_PAR_DEFAUT;
+  }
 
   const media = await chargerVideo(diapo);
   if (media && lecteur.active === diapo) {
@@ -578,11 +603,14 @@ function suivreProgression() {
   boucle();
 }
 
-async function ouvrirLecteur(videoDepart) {
-  const diapos = await Promise.all(etat.videos.map(creerDiapo));
+async function ouvrirLecteur(videoDepart, mode = 'videos') {
+  lecteur.mode = mode;
+  lecteur.liste = mode === 'favoris' ? etat.favoris : etat.videos;
+  const diapos = await Promise.all(lecteur.liste.map(mode === 'favoris' ? creerDiapoFavori : creerDiapo));
   filLecteur.replaceChildren(...diapos);
   ouvrirCalque($('#lecteur'));
-  filLecteur.scrollTop = etat.videos.indexOf(videoDepart) * filLecteur.clientHeight;
+  if (mode === 'favoris') diapos.forEach(couperLegende); // favoris.js : « …plus » après 2 lignes
+  filLecteur.scrollTop = lecteur.liste.indexOf(videoDepart) * filLecteur.clientHeight;
 
   lecteur.observateur = new IntersectionObserver((entrees) => {
     entrees.forEach((entree) => {
@@ -604,6 +632,7 @@ function arreterLecteur() {
     media.load();
   });
   filLecteur.replaceChildren();
+  $('.lecteur-recherche-texte').textContent = RECHERCHE_PAR_DEFAUT;
 }
 
 $('#lecteur').addEventListener('fermeture', arreterLecteur);
@@ -616,6 +645,11 @@ function basculer(diapo, bouton, champEtat, champCompteur) {
   bouton.classList.remove('pop');
   void bouton.offsetWidth; // relance l'animation
   bouton.classList.add('pop');
+  if (lecteur.mode === 'favoris') {
+    sauverFavoris();
+    signalerFavorisModifies(); // favoris.js
+    return;
+  }
   sauverVideos();
   if (champCompteur === 'jaime') afficherListe();
 }
@@ -644,6 +678,14 @@ $('#grid').addEventListener('click', (evenement) => {
   evenement.preventDefault();
   const video = etat.videos.find((element) => element.id === vignette.dataset.id);
   if (video) ouvrirLecteur(video);
+});
+
+$('#grid-favoris').addEventListener('click', (evenement) => {
+  const vignette = evenement.target.closest('.thumb');
+  if (!vignette) return;
+  evenement.preventDefault();
+  const video = etat.favoris.find((element) => element.id === vignette.dataset.id);
+  if (video) ouvrirLecteur(video, 'favoris');
 });
 
 /* ---------- Éditeur du profil (crayon) ---------- */
@@ -984,8 +1026,9 @@ async function afficherCompte(donnees) {
   etat.profil = donnees.profil;
   etat.videos = donnees.videos;
   etat.recompenses = donnees.recompenses;
+  etat.favoris = donnees.favoris;
   afficherProfil();
-  await Promise.all([afficherAvatar(), afficherGrille()]);
+  await Promise.all([afficherAvatar(), afficherGrille(), afficherGrilleFavoris()]);
 }
 
 async function demarrer() {

@@ -139,10 +139,12 @@ const Stockage = (() => {
     const profil = await lire('donnees', cle('profil', compte));
     const videos = await lire('donnees', cle('videos', compte));
     const recompenses = await lire('donnees', cle('recompenses', compte));
+    const favoris = await lire('donnees', cle('favoris', compte));
     return {
       profil: { ...(principal ? profilParDefaut : profilVide), ...profil },
       videos: videos ?? (principal ? videosParDefaut.map((video) => ({ ...video })) : []),
       recompenses: { ...(principal ? recompensesParDefaut : recompensesVides), ...recompenses },
+      favoris: favoris ?? [], // vidéos d'autres comptes, affichées dans l'onglet Favoris (voir favoris.js)
     };
   }
 
@@ -206,12 +208,12 @@ const Stockage = (() => {
     // Supprime un compte avec sa photo et les fichiers de ses vidéos ; renvoie le compte affiché ensuite
     async supprimerCompte(compte) {
       if (comptes.liste.length < 2 || !comptes.liste.includes(compte)) return comptes.actif;
-      const { videos } = await donneesDuCompte(compte);
-      const prefixes = videos.map((video) => `${video.id}/`);
+      const { videos, favoris } = await donneesDuCompte(compte);
+      const prefixes = [...videos, ...favoris].map((video) => `${video.id}/`);
       for (const fichier of await cles('fichiers')) {
         if (fichier === cle('avatar', compte) || prefixes.some((p) => String(fichier).startsWith(p))) await supprimer('fichiers', fichier);
       }
-      for (const nom of ['profil', 'videos', 'recompenses']) await supprimer('donnees', cle(nom, compte));
+      for (const nom of ['profil', 'videos', 'recompenses', 'favoris']) await supprimer('donnees', cle(nom, compte));
       comptes.liste = comptes.liste.filter((c) => c !== compte);
       if (comptes.actif === compte) comptes.actif = comptes.liste[0];
       await enregistrerComptes();
@@ -221,6 +223,7 @@ const Stockage = (() => {
     enregistrerProfil: (profil) => ecrire('donnees', cle('profil'), profil),
     enregistrerVideos: (videos) => ecrire('donnees', cle('videos'), videos),
     enregistrerRecompenses: (recompenses) => ecrire('donnees', cle('recompenses'), recompenses),
+    enregistrerFavoris: (favoris) => ecrire('donnees', cle('favoris'), favoris),
     lireFichier: (cleFichier) => lire('fichiers', cleFichier),
     ecrireFichier: (cleFichier, blob) => ecrire('fichiers', cleFichier, blob),
     supprimerFichier: (cleFichier) => supprimer('fichiers', cleFichier),

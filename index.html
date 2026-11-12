@@ -114,6 +114,9 @@
         <div class="grid" id="grid"></div>
         <p class="grille-vide" id="grille-vide" hidden>Aucune vidéo pour l'instant.<br>Ajoute-en avec un appui long sur ≡ en haut à droite.</p>
       </section>
+      <section class="panel" id="panel-favoris" hidden>
+        <div class="grid" id="grid-favoris"></div>
+      </section>
       <section class="panel empty" id="panel-empty" hidden>
         <div class="empty-icon" id="empty-icon"></div>
         <h2 id="empty-title"></h2>
@@ -759,6 +762,10 @@
           <span class="edition-entree-texte"><strong>Mes vidéos</strong>Ajouter, supprimer, vues, j'aime, commentaires et récompenses de chaque vidéo</span>
           <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
         </button>
+        <button class="edition-entree" type="button" data-ouvrir="favoris">
+          <span class="edition-entree-texte"><strong>Favoris</strong>Vidéos de l'onglet Favoris : auteur, photos, légende, son, j'aime, commentaires, favoris et partages</span>
+          <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+        </button>
         <button class="edition-entree" type="button" data-ouvrir="recompenses">
           <span class="edition-entree-texte"><strong>Solde, Studio et récompenses</strong>Solde du menu, statistiques de TikTok Studio, récompenses du mois et paiements</span>
           <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
@@ -865,6 +872,181 @@
       </div>
     </section>
 
+    <!-- Lecteur : vidéo d'un autre compte (onglet Favoris), voir favoris.js -->
+    <template id="modele-diapo-autre">
+      <section class="diapo autre">
+        <div class="diapo-scene">
+          <div class="diapo-media"></div>
+          <div class="diapo-pause" hidden>
+            <svg viewBox="0 0 48 48"><path d="M16 9.6c0-1.6 1.7-2.5 3-1.7l20.4 13.3c1.2.8 1.2 2.6 0 3.4L19 37.9c-1.3.9-3-.1-3-1.7z"/></svg>
+          </div>
+          <div class="diapo-colonne">
+            <span class="autre-profil">
+              <img class="diapo-avatar" alt="">
+              <span class="autre-suivre"><svg viewBox="0 0 12 12"><path d="M6 1.2v9.6M1.2 6h9.6"/></svg></span>
+            </span>
+            <button class="diapo-action diapo-jaime" type="button" aria-label="J'aime">
+              <svg viewBox="0 0 34 34"><path d="M17 29.8c-.5 0-1-.2-1.4-.5C11.4 26 2 19.4 2 11.8 2 7 5.6 3.2 10.2 3.2c2.8 0 5.2 1.3 6.8 3.4 1.6-2.1 4-3.4 6.8-3.4C28.4 3.2 32 7 32 11.8c0 7.6-9.4 14.2-13.6 17.5-.4.3-.9.5-1.4.5z"/></svg>
+              <span></span>
+            </button>
+            <button class="diapo-action diapo-commenter" type="button" aria-label="Commentaires">
+              <svg viewBox="0 0 34 34"><path fill-rule="evenodd" d="M17 3.5C9 3.5 2.6 8.9 2.6 15.6c0 6.4 5.8 11.6 13.2 12.1l2.3 3.3c.4.6 1.3.5 1.5-.2l.9-3.4c6.4-1.2 11.1-6 11.1-11.8C31.6 8.9 25.2 3.5 17 3.5zM11.1 13.5a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2zm5.9 0a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2zm5.9 0a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2z"/></svg>
+              <span></span>
+            </button>
+            <button class="diapo-action diapo-favori" type="button" aria-label="Favoris">
+              <svg viewBox="0 0 34 34"><path d="M6.2 5.6a2 2 0 0 1 2-2h17.6a2 2 0 0 1 2 2v21.4a1.1 1.1 0 0 1-1.8.9L17 21.6l-9 6.3a1.1 1.1 0 0 1-1.8-.9z"/></svg>
+              <span></span>
+            </button>
+            <button class="diapo-action diapo-partager" type="button" aria-label="Partager">
+              <svg viewBox="0 0 34 34"><path d="M18.6 4.6c-.6-.5-1.5-.1-1.5.7v5.6C8.2 11.6 3.2 17.3 3 28.5c0 .5.6.8 1 .4 2.8-3.4 6.8-5.5 13.1-5.6v5.7c0 .8.9 1.2 1.5.7l12.7-12.1c.4-.4.4-1 0-1.4z"/></svg>
+              <span></span>
+            </button>
+          </div>
+        </div>
+        <div class="diapo-bas">
+          <div class="autre-infos">
+            <p class="autre-etiquette"></p>
+            <p class="autre-auteur"><strong></strong><svg class="autre-certifie" viewBox="0 0 16 16" aria-label="Compte certifié"><circle cx="8" cy="8" r="8"/><path d="M4.6 8.2 7 10.5l4.4-4.6"/></svg><span class="diapo-date"></span></p>
+            <p class="autre-legende"></p>
+            <p class="autre-son"><svg viewBox="0 0 16 16"><path d="M5.6 12.3V3.9l8.2-1.7v8.5"/><ellipse cx="3.7" cy="12.4" rx="1.9" ry="1.6"/><ellipse cx="11.9" cy="10.8" rx="1.9" ry="1.6"/></svg><span></span></p>
+          </div>
+          <img class="diapo-disque" alt="">
+          <div class="autre-recherche">
+            <svg viewBox="0 0 16 16" class="stroke"><circle cx="6.8" cy="6.8" r="5.2"/><path d="m10.7 10.7 3.9 3.9"/></svg>
+            <span class="autre-recherche-texte"></span>
+            <svg class="chevron" viewBox="0 0 8 14"><path d="M1.3 1.3 6.7 7l-5.4 5.7"/></svg>
+          </div>
+          <div class="diapo-progression"><span></span></div>
+          <div class="autre-commentaire">
+            <span>Ajouter un commentaire...</span>
+            <svg viewBox="0 0 24 24" class="stroke"><rect x="2.4" y="2.4" width="19.2" height="19.2" rx="1.4"/><path d="M2.8 17.4 8.3 12a1.2 1.2 0 0 1 1.7 0l9.9 9.6"/><circle cx="16.4" cy="7.6" r="2" class="plein"/></svg>
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M12.6 21.6a9.6 9.6 0 1 1 9-9"/><path d="M21.6 12.6c-5 .2-8.8 4-9 9 4.8-.8 8.2-4.2 9-9z"/><ellipse cx="8.9" cy="10.2" rx="1.1" ry="1.3" class="plein"/><ellipse cx="14.5" cy="10.2" rx="1.1" ry="1.3" class="plein"/></svg>
+            <svg viewBox="0 0 24 24" class="stroke"><circle cx="12" cy="12" r="4"/><path d="M16 8v5.2c0 1.8 1.1 2.9 2.6 2.9s2.7-1.4 2.7-4A9.3 9.3 0 1 0 16.4 20"/></svg>
+          </div>
+        </div>
+      </section>
+    </template>
+
+    <!-- Mode édition → Favoris : vidéos d'autres comptes affichées dans l'onglet Favoris -->
+    <section class="screen" id="ecran-favoris" aria-label="Favoris">
+      <div class="screen-panel">
+        <header class="screen-bar">
+          <button class="screen-back" type="button" aria-label="Retour">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M15 4.5 7.5 12l7.5 7.5"/></svg>
+          </button>
+          <h2>Favoris</h2>
+        </header>
+
+        <label class="ajout" id="bouton-ajout-favori">
+          <svg viewBox="0 0 24 24" class="stroke"><path d="M12 5v14M5 12h14"/></svg>
+          <span id="ajout-favori-texte">Ajouter une vidéo en favori</span>
+          <input type="file" accept="image/*,video/*" multiple id="champ-ajout-favori" hidden>
+        </label>
+        <p class="ajout-aide">Ces vidéos s'affichent dans l'onglet Favoris (le signet) de ton profil. Touche le crayon d'une vidéo pour choisir son auteur, les photos, la légende, le son et les chiffres.</p>
+
+        <p class="compteur" id="compteur-favoris"></p>
+        <ul class="liste-videos" id="liste-favoris"></ul>
+        <input type="file" accept="image/*,video/*" id="champ-remplacer-favori" hidden>
+      </div>
+    </section>
+
+    <template id="modele-ligne-favori">
+      <li class="ligne">
+        <button class="ligne-miniature" type="button" data-action="remplacer" title="Remplacer l'image ou la vidéo">
+          <img alt="">
+          <span class="ligne-type"></span>
+        </button>
+        <button class="ligne-infos favori-resume" type="button" data-action="details">
+          <span class="favori-resume-auteur"><img alt=""><strong></strong></span>
+          <span class="favori-resume-legende"></span>
+        </button>
+        <div class="ligne-actions">
+          <button type="button" class="action" data-action="details" aria-label="Modifier (auteur, légende, son, chiffres…)">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M16.2 3.9a2.3 2.3 0 0 1 3.3 3.3L8.9 17.8l-4.6 1.3 1.3-4.6zM14.2 5.9l3.3 3.3"/></svg>
+          </button>
+          <button type="button" class="action" data-action="monter" aria-label="Monter">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>
+          </button>
+          <button type="button" class="action" data-action="descendre" aria-label="Descendre">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M12 5v14M5.5 12.5 12 19l6.5-6.5"/></svg>
+          </button>
+          <button type="button" class="action action-supprimer" data-action="supprimer" aria-label="Supprimer">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M4 6.5h16M9.5 6.5V4.8a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1.7M6.5 6.5l.9 12.6a1.5 1.5 0 0 0 1.5 1.4h6.2a1.5 1.5 0 0 0 1.5-1.4l.9-12.6M10 10.5v6M14 10.5v6"/></svg>
+          </button>
+        </div>
+      </li>
+    </template>
+
+    <!-- Une vidéo en favori : auteur, photos, légende, son, chiffres -->
+    <section class="screen" id="ecran-favori" aria-label="Vidéo en favori">
+      <div class="screen-panel">
+        <header class="screen-bar">
+          <button class="screen-back" type="button" aria-label="Retour">
+            <svg viewBox="0 0 24 24" class="stroke"><path d="M15 4.5 7.5 12l7.5 7.5"/></svg>
+          </button>
+          <h2>Vidéo en favori</h2>
+        </header>
+
+        <div class="details-apercu">
+          <button class="ligne-miniature details-miniature" type="button" id="favori-miniature" title="Remplacer l'image ou la vidéo">
+            <img alt="">
+            <span class="ligne-type"></span>
+          </button>
+          <div class="details-apercu-texte">
+            <p>Touche la miniature pour la remplacer.</p>
+            <button type="button" class="details-voir" id="favori-voir">
+              <svg viewBox="0 0 20 20" class="stroke"><path d="M5.5 3.5 16 10 5.5 16.5z"/></svg>
+              Voir la vidéo
+            </button>
+          </div>
+        </div>
+
+        <div class="favori-photos">
+          <button type="button" class="favori-photo" data-photo="auteur">
+            <img alt="">
+            <span>Photo de profil</span>
+          </button>
+          <button type="button" class="favori-photo favori-photo-son" data-photo="son">
+            <img alt="">
+            <span>Photo du son</span>
+          </button>
+        </div>
+        <p class="champ-aide favori-photos-aide">La photo du son est le disque qui tourne en bas à droite. Sans photo choisie, c'est la photo de profil, comme sur TikTok.</p>
+        <input type="file" accept="image/*" id="champ-photo-favori" hidden>
+
+        <form class="formulaire" id="formulaire-favori" autocomplete="off">
+          <p class="section-titre">Auteur</p>
+          <label class="champ"><span class="champ-label">Nom</span><input name="auteur" maxlength="40" placeholder="Nom affiché sous la vidéo"></label>
+          <label class="champ champ-bascule"><span class="champ-label">Compte certifié (badge bleu)</span><input type="checkbox" name="certifie"><span class="interrupteur" aria-hidden="true"></span></label>
+          <label class="champ"><span class="champ-label">Publiée le</span><input name="date" type="datetime-local"></label>
+          <p class="champ-aide">Affiché « Il y a 22 h », « Il y a 3 j », puis la date (11-02) après une semaine.</p>
+
+          <p class="section-titre">Description</p>
+          <label class="champ champ-haut"><span class="champ-label">Légende</span><textarea name="legende" rows="3" placeholder="Texte sous le nom. #hashtags et @mentions en gras"></textarea></label>
+          <label class="champ"><span class="champ-label">Son</span><input name="son" placeholder="ex. Turnin Your Back - Melly"></label>
+          <label class="champ"><span class="champ-label">Texte sur la vidéo</span><input name="etiquette" placeholder="Facultatif (encadré gris)"></label>
+          <p class="champ-aide">Après 2 lignes, la légende est coupée avec « …plus ». Son vide = pas de ligne ♫.</p>
+
+          <p class="section-titre">Statistiques</p>
+          <label class="champ"><span class="champ-label">Vues</span><input name="vues" inputmode="decimal" placeholder="Sur la miniature"></label>
+          <label class="champ"><span class="champ-label">J'aime</span><input name="jaime" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Commentaires</span><input name="commentaires" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Favoris</span><input name="favoris" inputmode="decimal"></label>
+          <label class="champ"><span class="champ-label">Partages</span><input name="partages" inputmode="decimal"></label>
+          <p class="champ-aide">Écris un nombre (ex. 21900) : il s'affiche comme sur TikTok (21,9 K).</p>
+
+          <p class="section-titre">Toi</p>
+          <label class="champ champ-bascule"><span class="champ-label">Cœur rouge (tu as aimé)</span><input type="checkbox" name="aime"><span class="interrupteur" aria-hidden="true"></span></label>
+          <label class="champ champ-bascule"><span class="champ-label">Signet jaune (dans tes favoris)</span><input type="checkbox" name="enFavori"><span class="interrupteur" aria-hidden="true"></span></label>
+
+          <p class="section-titre">Recherche</p>
+          <label class="champ"><span class="champ-label">Barre du haut</span><input name="recherche" placeholder="Trouver du contenu associé"></label>
+          <label class="champ"><span class="champ-label">Barre du bas</span><input name="rechercheBas" placeholder="Vide = pas de barre"></label>
+          <p class="champ-aide">Barre du bas : « Recherche · ton texte », juste au-dessus de « Ajouter un commentaire… ».</p>
+        </form>
+      </div>
+    </section>
+
     <!-- Changer de compte (icônes de personnes en haut du profil) -->
     <div class="feuille" id="feuille-comptes" role="dialog" aria-label="Changer de compte">
       <div class="feuille-voile" id="feuille-voile"></div>
@@ -898,5 +1080,6 @@
   <script src="script.js"></script>
   <script src="studio.js"></script>
   <script src="comptes.js"></script>
+  <script src="favoris.js"></script>
 </body>
 </html>

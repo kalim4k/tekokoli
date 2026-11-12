@@ -1198,6 +1198,178 @@ html.calque-ouvert body { overflow: hidden; }
 }
 .diapo-donnees svg { width: 19.8px; height: 19.8px; stroke-width: 1.8; }
 
+/* ---------- Lecteur : vidéo d'un autre compte (onglet Favoris) ---------- */
+/* Mesuré sur la capture du 12-11 (852 px de large = 2,071 px par px CSS) */
+
+/* Pas de bouton « ••• » : la colonne descend. Avec la barre « Recherche » du bas, tout remonte. */
+.diapo.autre .diapo-colonne { bottom: -32.8px; }
+.diapo.autre.avec-recherche .diapo-colonne { bottom: 4.9px; }
+.autre-profil {
+  position: relative;
+  display: block;
+  margin-bottom: 25.25px;
+}
+.diapo.autre .diapo-avatar { display: block; margin-bottom: 0; border: 0; }
+/* Bouton « + » rouge (suivre) à cheval sur le bas de la photo */
+.autre-suivre {
+  position: absolute;
+  left: 50%;
+  top: 35.6px;
+  display: grid;
+  place-items: center;
+  width: 22.8px;
+  height: 22.8px;
+  border-radius: 50%;
+  background: var(--red);
+  transform: translateX(-50%);
+}
+.autre-suivre svg {
+  width: 10px;
+  height: 10px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.diapo.autre .diapo-favori.actif { color: #face15; }
+
+/* Bas à gauche : texte sur la vidéo, auteur, légende, son. Collé au-dessus de la barre de progression
+   (ou de la barre « Recherche ») : un texte plus long remonte sur la vidéo. */
+.autre-infos {
+  position: absolute;
+  left: 13.3px;
+  bottom: calc(100% - 88.1px);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 267px; /* largeur de la légende : « d’honneur » passe à la ligne comme sur la capture */
+  padding-bottom: 0.2px;
+}
+.diapo.avec-recherche .autre-infos { bottom: calc(100% - 46.45px); }
+.autre-infos > p { margin: 0; max-width: 100%; }
+
+.autre-etiquette {
+  margin: 0 0 9.5px -0.7px !important;
+  padding: 0 7.7px;
+  border-radius: 6px;
+  background: rgba(64, 64, 64, 0.55);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  font-size: 14.34px;
+  font-weight: 550;
+  line-height: 31.9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.autre-auteur {
+  display: flex;
+  align-items: center;
+  font-size: 18.07px;
+  line-height: 22px;
+  white-space: nowrap;
+}
+.autre-auteur strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 550;
+}
+.autre-certifie {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  margin-left: 3.35px;
+  fill: var(--cyan);
+}
+.autre-certifie path { fill: none; stroke: #fff; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.autre-auteur .diapo-date { flex: none; margin-left: 3.6px; color: rgba(255, 255, 255, 0.545); }
+.autre-certifie:not([hidden]) + .diapo-date { margin-left: 4.1px; }
+
+.autre-legende {
+  margin-top: 9.2px !important;
+  font-size: 15.7px;
+  font-weight: 320;
+  line-height: 19.8px;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.autre-legende strong { font-weight: 480; letter-spacing: 0.15px; }
+.autre-legende .hashtag { color: rgba(255, 255, 255, 0.82); }
+.autre-legende .plus { color: rgba(255, 255, 255, 0.78); }
+
+.autre-son {
+  display: flex;
+  align-items: center;
+  gap: 4.6px;
+  margin: 5.3px 0 8.7px !important;
+  font-size: 14.9px;
+  font-weight: 320;
+  line-height: 20px;
+  white-space: nowrap;
+}
+.autre-son svg {
+  flex: none;
+  width: 13.5px;
+  height: 13.5px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.autre-son span { max-width: 175px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Avec la barre « Recherche » du bas, le disque remonte avec le texte */
+.diapo.avec-recherche .diapo-disque { top: -3.7px; }
+
+.autre-recherche {
+  position: absolute;
+  top: 52.6px;
+  left: 0;
+  right: 0;
+  display: none;
+  align-items: center;
+  height: 37.4px;
+  padding: 0 13.2px 0 12.9px;
+  background: #242424;
+  font-size: 13.3px;
+  font-weight: 560;
+  white-space: nowrap;
+}
+.diapo.avec-recherche .autre-recherche { display: flex; }
+.autre-recherche > svg.stroke { flex: none; width: 15.9px; height: 15.9px; stroke-width: 2.1; }
+.autre-recherche-texte {
+  flex: 1;
+  min-width: 0;
+  margin: 0 12px 0 5.6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.autre-recherche .chevron { flex: none; width: 7.2px; height: 12.6px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* « Ajouter un commentaire… » */
+.autre-commentaire {
+  position: absolute;
+  top: 95px;
+  left: 13.3px;
+  right: 13.5px;
+  display: flex;
+  align-items: center;
+  height: 45.9px;
+  padding: 0 13.35px 0 12.3px;
+  border-radius: 23px;
+  background: #333;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 15.8px;
+  font-weight: 310;
+  white-space: nowrap;
+}
+.autre-commentaire span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.autre-commentaire svg { flex: none; width: 23.5px; height: 23.5px; margin-left: 16.4px; stroke-width: 2; color: rgba(255, 255, 255, 0.75); }
+.autre-commentaire svg .plein { fill: currentColor; stroke: none; }
+
 /* ---------- Détails d'une vidéo ---------- */
 .details-apercu {
   display: flex;
@@ -1293,6 +1465,63 @@ html.calque-ouvert body { overflow: hidden; }
   font-size: 14px;
 }
 .ajout-petit svg { width: 18px; height: 18px; }
+
+/* ---------- Mode édition → Favoris ---------- */
+.favori-resume {
+  gap: 5px;
+  align-self: stretch;
+  justify-content: center;
+  text-align: left;
+}
+.favori-resume-auteur {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  font-size: 14px;
+}
+.favori-resume-auteur img {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+}
+.favori-resume-auteur strong,
+.favori-resume-legende {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.favori-resume-auteur strong { font-weight: 600; }
+.favori-resume-legende { font-size: 13px; color: var(--muted); }
+
+.favori-photos {
+  display: flex;
+  justify-content: center;
+  gap: 44px;
+  padding: 22px 17px 0;
+}
+.favori-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.favori-photo img {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+}
+/* Le disque du son : photo ronde dans un anneau sombre */
+.favori-photo-son img { border: 7px solid #2a2a2a; }
+.favori-photos-aide { text-align: center; }
 
 /* ---------- Message temporaire ---------- */
 .toast {

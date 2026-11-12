@@ -96,7 +96,7 @@ $('#supprimer-compte').addEventListener('click', () => {
     cleMiniature(video),
     cleVideo(video),
     ...(video.commentairesAffiches ?? []).map((commentaire) => cleCommentaire(video, commentaire)),
-  ])];
+  ]), ...etat.favoris.flatMap(clesFichiersFavori)];
   fermerPuis($('#ecran-profil'), async () => {
     try {
       fichiers.forEach(oublierFichier);

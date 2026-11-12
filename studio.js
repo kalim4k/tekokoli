@@ -629,6 +629,7 @@ $('#ecran-edition').addEventListener('click', (evenement) => {
   const entree = evenement.target.closest('[data-ouvrir]');
   if (!entree) return;
   if (entree.dataset.ouvrir === 'videos') ouvrirGestionVideos();
+  else if (entree.dataset.ouvrir === 'favoris') ouvrirGestionFavoris(); // favoris.js
   else if (entree.dataset.ouvrir === 'recompenses') ouvrirEditionRecompenses();
   else $('#ouvrir-profil').click();
 });
